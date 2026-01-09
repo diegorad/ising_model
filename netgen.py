@@ -1,9 +1,11 @@
 import networkx as nx
 import random
+import sys
 from tools import *
 
 size = 50
 ratio = 0.1 #N_0/N_1
+ratio = float(sys.argv[1])
 
 #Here S corresponds to S/2
 S = {0: 2,	#Spin of species 0
@@ -25,7 +27,7 @@ G = nx.relabel_nodes(H, mapping)
 
 #Assing type to nodes accordin to ratio
 N = len(G.nodes())
-Na = int(ratio * N/(1+ratio))
+Na = int(ratio * N)
 Nb = N - Na
 
 numberOfNodes = {}
@@ -66,6 +68,7 @@ with open("nodes.dat", "w") as f:
         f.write('\n')
      
 #Export neighbor list
+print("Exporting neighbors list to neighbors.dat")
 with open("neighbors.dat", "w") as f:
 	for node in range(N):
 		neighbors = [node for node in G.adj[node]]

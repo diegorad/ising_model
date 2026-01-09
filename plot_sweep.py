@@ -6,7 +6,7 @@ col1 = []
 col2 = []
 col3 = []
 
-with open("output.txt", "r") as f:
+with open("output_D.txt", "r") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) == 3:
@@ -27,26 +27,26 @@ y_max_padded = y_max + padding
 #y_max_padded = 3000
 
 # Create figure with 2 horizontal subplots
-plt.figure(figsize=(10, 4))
+plt.figure(figsize=(5, 2))
 
 # Plot 1: Column 1 vs Column 2
-plt.subplot(1, 2, 1)
 plt.plot(col1, col2)
+plt.plot(col1, col3)
 plt.xlabel("Column 1")
 plt.ylabel("Column 2")
 plt.title("Column 1 vs Column 2")
 plt.ylim(y_min_padded, y_max_padded)
 plt.grid(True)
 
-# Plot 2: Column 1 vs Column 3
-plt.subplot(1, 2, 2)
-plt.plot(col1, col3)
-plt.xlabel("Column 1")
-plt.ylabel("Column 3")
-plt.title("Column 1 vs Column 3")
-plt.ylim(y_min_padded, y_max_padded)
-plt.grid(True)
+## Plot 2: Column 1 vs Column 3
+#plt.subplot(1, 2, 2)
+#plt.plot(col1, col3)
+#plt.xlabel("Column 1")
+#plt.ylabel("Column 3")
+#plt.title("Column 1 vs Column 3")
+#plt.ylim(y_min_padded, y_max_padded)
+#plt.grid(True)
 
 plt.tight_layout()
-#plt.show()
-plt.savefig('plot.png')
+plt.show()
+
