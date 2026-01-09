@@ -1,0 +1,4 @@
+__pycache__/
+ising_model
+*.dat
+*.txt
