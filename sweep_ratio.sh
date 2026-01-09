@@ -23,7 +23,6 @@ echo -ne $i"/"$batch"\r"
 	do
 	 	step=$(($nc*$i+$j))
 		val="$(calc $min+$step*$numStep)"
-#		echo $val
 		echo $val "$(./findZero_ratio.sh $step $val)" >> output_D.txt&
 	done
 	wait

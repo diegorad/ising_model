@@ -12,9 +12,9 @@ cd data_$1
 
 	python3 netgen.py $2 >/dev/null
 	./ising_model --out=output --D="{0,0}" --seed=$1 > output.txt
-#	echo $(python3 findZero.py $1)
-	python3 plot.py
-	cp plot.png ../plot_serie/plot_$1.png
+	echo $(python3 findZero.py $1)
+#	python3 plot.py
+#	cp plot.png ../plot_serie/plot_$1.png
 
 cd ../
 rm -r data_$1
