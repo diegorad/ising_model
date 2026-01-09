@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #ifndef TOOLS_H
 #define TOOLS_H
@@ -23,3 +24,4 @@ double randDouble(double min, double max);
 void exportList(int sizeOfArray, int dim, double **array, char *fileName);
 void print_node(const Node* n);
 void print_lattice(const Node* nodes, int L);
+int parse_double_array(const char *s, double *arr, int n);

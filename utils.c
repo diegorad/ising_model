@@ -1,13 +1,12 @@
 #include "utils.h"
 
-double  E(int i, bool flip, int *newSpin, int **neighbors, Node *nodes, double h, double D_0){
+double  E(int i, bool flip, int *newSpin, int **neighbors, Node *nodes, double h, double *D_i){
 	int j, spin;
 	int len = nodes[i].spin_value + 1;
 	double sum = 0;
 	double energy = 0;
 	double J, D;
 	double J_ij[] = {0.1, 1, -0.75}; //J: AA, BB, AB||BA
-	double D_i[] = {D_0, 0};
 	
 	//Spin flipping
 	spin = nodes[i].spin;

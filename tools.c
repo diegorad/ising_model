@@ -150,3 +150,27 @@ void print_lattice(const Node* nodes, int L)
         printf("\n");
     }
 }
+
+int parse_double_array(const char *s, double *arr, int n)
+{
+    // Expect format: {x,y,...}
+    if (s[0] != '{')
+        return -1;
+
+    const char *p = s + 1;
+
+    for (int i = 0; i < n; i++) {
+        if (sscanf(p, "%lf", &arr[i]) != 1)
+            return -1;
+
+        p = strchr(p, ',');
+        if (!p) {
+            if (i == n - 1)
+                break;
+            return -1;
+        }
+        p++;
+    }
+
+    return 0;
+}
