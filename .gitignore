@@ -5,3 +5,5 @@ ising_model
 *.png
 .~lock.data.odp#
 Animations/
+*.mp4
+output.txt~

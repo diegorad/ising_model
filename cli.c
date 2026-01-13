@@ -8,6 +8,7 @@
 static struct option long_options[] = {
     {"out", required_argument, 0, 'o'},
     {"D_i",   required_argument, 0, 'D'},
+    {"J_ij",   required_argument, 0, 'J'},
     {"seed", required_argument, 0, 's'},
     {"help", no_argument, 0, 'h'},
     {0, 0, 0, 0}
@@ -18,7 +19,7 @@ int parse_args(int argc, char **argv, Config *cfg)
     int opt;
     int option_index = 0;
 
-    while ((opt = getopt_long(argc, argv, "o:D:h",
+    while ((opt = getopt_long(argc, argv, "o:D:s:h",
                               long_options, &option_index)) != -1)
     {
         switch (opt) {
@@ -41,16 +42,26 @@ int parse_args(int argc, char **argv, Config *cfg)
 				fprintf(stderr, "Invalid format for --D_i. Usage example: --D_i=\"{0.0, 0.0}\"\n");
 				exit(EXIT_FAILURE);
 			}
+			break;
+			
+		 case 'J':
+			if (parse_double_array(optarg, cfg->J_ij, 3) != 0) {
+				fprintf(stderr, "Invalid format for --J_ij. Usage example: --J_ij=\"{0.0, 0.0, 0.0}\"\n");
+				exit(EXIT_FAILURE);
+			}
+			break;
 			
 		case 's':
 			cfg->seed = atof(optarg);
-    break;
+    		break;
 
         case 'h':
             printf("Usage: %s [options]\n", argv[0]);
             printf("  --out=monitor|output|plot\n");
-            printf("  --D=value\n");
-            return EXIT_SUCCESS;
+            printf("  --D_i={0.0, 0.0}\n");
+            printf("  --J_ij={0.0, 0.0, 0.0}\n");
+            printf("  --seed=1\n");
+            exit(EXIT_SUCCESS);
 
         default:
             return EXIT_FAILURE;

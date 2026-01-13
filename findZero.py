@@ -10,7 +10,7 @@ col1 = []
 col2 = []
 col3 = []
 
-with open("out_{0}.txt".format(index), "r") as f:
+with open("output.txt".format(index), "r") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) == 3:

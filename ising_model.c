@@ -18,10 +18,12 @@
 #define lattice_size 50
     
 int main(int argc, char *argv[])
-{
+{	
+	//Default parameter values
 	Config cfg = {
 		    .out_mode = OUT_PLOT,
 		    .D_i = {0.0, 0.0},
+		    .J_ij = {0.1, 1.0, -0.75},
 		    .seed = 0
 	};
     
@@ -39,7 +41,6 @@ int main(int argc, char *argv[])
 	double fieldRange = 5;
 	double h=0;
 	double k_B = 1.0, T = 1.0;
-	double D_0 = 1;
 	double rampRate = fieldRange/(numberOfIterations/5);
 	int i,j,iter;
 	double energy, energy_flip, delta_energy, P;
@@ -87,8 +88,8 @@ int main(int argc, char *argv[])
 		for(i=0;i<N;i++){
 			int newSpin = -999;
 			j = rand()%N;
-			energy = E(j, false, &newSpin, neighbors, nodes, h, cfg.D_i);
-			energy_flip = E(j, true, &newSpin, neighbors, nodes, h, cfg.D_i);
+			energy = E(j, false, &newSpin, neighbors, nodes, h, cfg.D_i, cfg.J_ij);
+			energy_flip = E(j, true, &newSpin, neighbors, nodes, h, cfg.D_i, cfg.J_ij);
 			delta_energy = energy_flip - energy;
 			
 			event = randDouble(0, 1) <= boltzmann(delta_energy, k_B, T);

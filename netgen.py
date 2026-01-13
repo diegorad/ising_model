@@ -4,12 +4,11 @@ import sys
 from tools import *
 
 size = 50
-ratio = 0.1 #N_0/N_1
 ratio = float(sys.argv[1])
 
 #Here S corresponds to S/2
-S = {0: 2,	#Spin of species 0
-	 1: 1	#Spin of species 1
+S = {0: 4,	#Spin of species 0
+	 1: 1 	#Spin of species 1
 	 }
 
 #Calculate and populate allowed projections

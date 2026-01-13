@@ -1,10 +1,25 @@
 import matplotlib.pyplot as plt
 import addcopyfighandler
+import sys
 
 # Load data
 col1 = []
 col2 = []
 col3 = []
+
+sys.argv = sys.argv[1:]
+
+savefig = False
+label = None
+
+while sys.argv:
+	if sys.argv[0] == "--savefig":
+		savefig = True
+	if sys.argv[0] == "--label":
+		label = sys.argv[1]
+		sys.argv = sys.argv[1:]
+		
+	sys.argv = sys.argv[1:]
 
 with open("output.txt", "r") as f:
     for line in f:
@@ -28,6 +43,7 @@ y_max_padded = y_max + padding
 
 # Create figure with 2 horizontal subplots
 plt.figure(figsize=(10, 4))
+plt.suptitle(label)
 
 # Plot 1: Column 1 vs Column 2
 plt.subplot(1, 2, 1)
@@ -48,5 +64,9 @@ plt.ylim(y_min_padded, y_max_padded)
 plt.grid(True)
 
 plt.tight_layout()
-#plt.show()
-plt.savefig('plot.png')
+
+if(savefig):
+	plt.savefig('plot.png')
+else:
+	plt.show()
+

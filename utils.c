@@ -1,12 +1,11 @@
 #include "utils.h"
 
-double  E(int i, bool flip, int *newSpin, int **neighbors, Node *nodes, double h, double *D_i){
+double  E(int i, bool flip, int *newSpin, int **neighbors, Node *nodes, double h, double *D_i, double *J_ij){
 	int j, spin;
 	int len = nodes[i].spin_value + 1;
 	double sum = 0;
 	double energy = 0;
 	double J, D;
-	double J_ij[] = {0.1, 1, -0.75}; //J: AA, BB, AB||BA
 	
 	//Spin flipping
 	spin = nodes[i].spin;
@@ -23,7 +22,7 @@ double  E(int i, bool flip, int *newSpin, int **neighbors, Node *nodes, double h
 		
 	//Sum of neighboring spins
 	for(j=0;j<4;j++){
-		//Rules for anti-/-parallel coupling
+		//Rules for (anti)parallel coupling
 		if(nodes[i].type == nodes[neighbors[i][j]].type)
 			J = J_ij[nodes[i].type];
 		else

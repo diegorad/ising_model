@@ -1,17 +1,21 @@
 #! /bin/bash
 
-calc(){ awk "BEGIN { print "$*" }"; }
+calc() {
+    echo "$*" | bc -l
+}
 
 nc=8 	#Parallel threads
-min=0
-max=1
-nSteps=96
+min=-1
+max=0
+nSteps=48
 
-range="$(calc $max-$min)"
+range="$(calc $max - $min)"
 batch=$(($nSteps/$nc))
 
 numStep="$(calc $range/$(($nSteps-1)))"
 
+rm -r plot_serie
+rm -r data_*
 mkdir plot_serie
 
 >output_D.txt
@@ -23,7 +27,7 @@ echo -ne $i"/"$batch"\r"
 	do
 	 	step=$(($nc*$i+$j))
 		val="$(calc $min+$step*$numStep)"
-		echo $val "$(./findZero_ratio.sh $step $val)" >> output_D.txt&
+		echo $val "$(./sweep_rutine.sh $step $val)" >> output_D.txt&
 	done
 	wait
 done

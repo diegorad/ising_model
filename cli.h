@@ -12,6 +12,7 @@ typedef enum {
 typedef struct {
     OutputMode out_mode;
     double D_i[2];
+    double J_ij[3];
     int seed;
 } Config;
 
