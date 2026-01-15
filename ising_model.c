@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
 	//Default parameter values
 	Config cfg = {
 		    .out_mode = OUT_PLOT,
-		    .D_i = {0.0, 0.0},
-		    .J_ij = {0.1, 1.0, -0.75},
+		    .D_i = {0.0, 0.0},	//57.88 μeV
+		    .J_ij = {0.1, 1.0, -0.75},	//57.88 μeV
 		    .seed = 0
 	};
     
@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
 	int N = lattice_size*lattice_size;
 	int numberOfIterations = 1e3;
 	double fieldRange = 5;
-	double h=0;
-	double k_B = 1.0, T = 1.0;
+	double B=0;	// [B]=[57.88 μeV] so that B=1 ~ 1 T (57.88 μeV/mu_B)
+	double k_B = 1.0, T = 6; // [T]=[57.88 μeV], T=1 ~ 0.672 K
 	double rampRate = fieldRange/(numberOfIterations/5);
 	int i,j,iter;
 	double energy, energy_flip, delta_energy, P;
@@ -81,15 +81,15 @@ int main(int argc, char *argv[])
 		
 		//OUTPUT
 		if(cfg.out_mode == 1)
-			printf("%lf %d %d\n", h, sumSpins(N, nodes, 0), sumSpins(N, nodes, 1));
+			printf("%lf %d %d\n", B, sumSpins(N, nodes, 0), sumSpins(N, nodes, 1));
 		else
-			fprintf(f, "%lf %d %d\n", h, sumSpins(N, nodes, 0), sumSpins(N, nodes, 1));
+			fprintf(f, "%lf %d %d\n", B, sumSpins(N, nodes, 0), sumSpins(N, nodes, 1));
 		
 		for(i=0;i<N;i++){
 			int newSpin = -999;
 			j = rand()%N;
-			energy = E(j, false, &newSpin, neighbors, nodes, h, cfg.D_i, cfg.J_ij);
-			energy_flip = E(j, true, &newSpin, neighbors, nodes, h, cfg.D_i, cfg.J_ij);
+			energy = E(j, false, &newSpin, neighbors, nodes, B, cfg.D_i, cfg.J_ij);
+			energy_flip = E(j, true, &newSpin, neighbors, nodes, B, cfg.D_i, cfg.J_ij);
 			delta_energy = energy_flip - energy;
 			
 			event = randDouble(0, 1) <= boltzmann(delta_energy, k_B, T);
@@ -103,20 +103,20 @@ int main(int argc, char *argv[])
 			}
 		}		
 				
-		if(h < fieldRange && latch == false)
-			h += rampRate;
+		if(B < fieldRange && latch == false)
+			B += rampRate;
 		else{
-			h -= rampRate;
+			B -= rampRate;
 			latch = true;
 		}
 		
-		if(h < -fieldRange)
+		if(B < -fieldRange)
 			latch = false;
 		
 		//MONITOR
 		if(cfg.out_mode == 0 || cfg.out_mode == 2)
 			if (iter % 5 == 0){
-				printf("Step: %d  H: %.3f\r", iter, h);
+				printf("Step: %d  B: %.3f\r", iter, B);
 				if(cfg.out_mode == 2){
 					fflush(stdout);
 					usleep(100000);
