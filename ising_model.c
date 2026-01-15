@@ -35,16 +35,14 @@ int main(int argc, char *argv[])
     
 	int **neighbors;
 	Node *nodes;
-	int L = 2*lattice_size*(lattice_size-1);
 	int N = lattice_size*lattice_size;
-	int numberOfIterations = 1e3;
-	double fieldRange = 5;
+	int numberOfIterations;
+	double *fieldRoutine;
 	double B=0;	// [B]=[57.88 μeV] so that B=1 ~ 1 T (57.88 μeV/mu_B)
 	double k_B = 1.0, T = 6; // [T]=[57.88 μeV], T=1 ~ 0.672 K
-	double rampRate = fieldRange/(numberOfIterations/5);
-	int i,j,iter;
-	double energy, energy_flip, delta_energy, P;
-	bool event, latch = false;
+	int i,j;
+	double energy, energy_flip, delta_energy;
+	bool event;
 	FILE *f;
 
 	srand(time(NULL)+cfg.seed);
@@ -64,13 +62,19 @@ int main(int argc, char *argv[])
 		nodes[i].spin = nodes[i].spin_z[random_index];
 	}
 	
+	//Load field routine
+	fieldRoutine = loadFloatList("field.dat", &numberOfIterations);
+	
 	//PLOT BEGIN
 	if(cfg.out_mode == 2){
 		printf(CLEAR_SCREEN);
 		fflush(stdout);	
 	}
 	
-	for(iter = 0;iter<numberOfIterations;iter++){
+	for(int iter = 0;iter<numberOfIterations;iter++){
+		//Field routine
+		B = fieldRoutine[iter];
+	
 		//PLOT
 		if(cfg.out_mode == 2){
 			if (iter % 5 == 0){
@@ -102,16 +106,6 @@ int main(int argc, char *argv[])
 				nodes[j].spin = newSpin;
 			}
 		}		
-				
-		if(B < fieldRange && latch == false)
-			B += rampRate;
-		else{
-			B -= rampRate;
-			latch = true;
-		}
-		
-		if(B < -fieldRange)
-			latch = false;
 		
 		//MONITOR
 		if(cfg.out_mode == 0 || cfg.out_mode == 2)

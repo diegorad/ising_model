@@ -11,6 +11,7 @@ sys.argv = sys.argv[1:]
 
 savefig = False
 label = None
+timePlot = False
 
 while sys.argv:
 	if sys.argv[0] == "--savefig":
@@ -18,6 +19,8 @@ while sys.argv:
 	if sys.argv[0] == "--label":
 		label = sys.argv[1]
 		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--time":
+		timePlot = True
 		
 	sys.argv = sys.argv[1:]
 
@@ -65,6 +68,23 @@ plt.grid(True)
 
 plt.tight_layout()
 
+if(timePlot):
+	plt.close()
+	plt.figure(figsize=(10, 4))
+	plt.suptitle(label)
+	
+	plt.subplot(1, 2, 1)
+	plt.plot(col2)
+	plt.ylim(y_min_padded, y_max_padded)
+	plt.grid(True)
+	
+	plt.subplot(1, 2, 2)
+	plt.plot(col3)
+	plt.ylim(y_min_padded, y_max_padded)
+	plt.grid(True)
+	
+	plt.tight_layout()
+	
 if(savefig):
 	plt.savefig('plot.png')
 else:
