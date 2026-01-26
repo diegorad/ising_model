@@ -3,13 +3,39 @@ import random
 import sys
 from tools import *
 
+#Defaults
 size = 50
-ratio = float(sys.argv[1])
+ratio = 0.1
+
+S_0 = 2
+S_1 = 1
+
+#Argument parsing
+while sys.argv:
+	if sys.argv[0] == "--ratio":
+		ratio = float(sys.argv[1])
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--size":
+		size = int(sys.argv[1])
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--S_0":
+		S_0 = int(sys.argv[1])
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--S_1":
+		S_1 = int(sys.argv[1])
+		sys.argv = sys.argv[1:]
+		
+	sys.argv = sys.argv[1:]
 
 #Here S corresponds to S/2
-S = {0: 4,	#Spin of species 0
-	 1: 1 	#Spin of species 1
+S = {0: S_0,	#Spin of species 0
+	 1: S_1 	#Spin of species 1
 	 }
+
+#Print info
+print(f"Size: {size}")
+print(f"Percentage elements: {ratio}, {1-ratio}")
+print(f"Spin: {S}")
 
 #Calculate and populate allowed projections
 S_z = {0: [], 1: []}

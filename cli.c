@@ -10,6 +10,7 @@ static struct option long_options[] = {
     {"D_i",   required_argument, 0, 'D'},
     {"J_ij",   required_argument, 0, 'J'},
     {"seed", required_argument, 0, 's'},
+    {"T", required_argument, 0, 'T'},
     {"help", no_argument, 0, 'h'},
     {0, 0, 0, 0}
 };
@@ -19,7 +20,7 @@ int parse_args(int argc, char **argv, Config *cfg)
     int opt;
     int option_index = 0;
 
-    while ((opt = getopt_long(argc, argv, "o:D:s:h",
+    while ((opt = getopt_long(argc, argv, "o:D:J:s:T:h",
                               long_options, &option_index)) != -1)
     {
         switch (opt) {
@@ -54,6 +55,10 @@ int parse_args(int argc, char **argv, Config *cfg)
 		case 's':
 			cfg->seed = atof(optarg);
     		break;
+    	
+    	case 'T':
+			cfg->T = atof(optarg);
+    		break;
 
         case 'h':
             printf("Usage: %s [options]\n", argv[0]);
@@ -61,6 +66,7 @@ int parse_args(int argc, char **argv, Config *cfg)
             printf("  --D_i={0.0, 0.0}\n");
             printf("  --J_ij={0.0, 0.0, 0.0}\n");
             printf("  --seed=1\n");
+            printf("  --T=6/n");
             exit(EXIT_SUCCESS);
 
         default:

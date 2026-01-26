@@ -5,20 +5,18 @@ calc() {
 }
 
 nc=8 	#Parallel threads
-min=-1
+min=-2
 max=0
-nSteps=48
+nSteps=48	#Must be divisible by nc
 
 range="$(calc $max - $min)"
 batch=$(($nSteps/$nc))
 
 numStep="$(calc $range/$(($nSteps-1)))"
 
-rm -r plot_serie
-rm -r data_*
-mkdir plot_serie
-
->output_D.txt
+rm -r plot_serie 2> /dev/null
+rm -r data_* 2> /dev/null
+mkdir plot_serie 2> /dev/null
 
 for i in $(seq 0 $(($batch-1)))
 do
@@ -27,7 +25,7 @@ echo -ne $i"/"$batch"\r"
 	do
 	 	step=$(($nc*$i+$j))
 		val="$(calc $min+$step*$numStep)"
-		echo $val "$(./sweep_rutine.sh $step $val)" >> output_D.txt&
+		./sweep_rutine.sh $step $val&
 	done
 	wait
 done

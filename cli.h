@@ -14,6 +14,7 @@ typedef struct {
     double D_i[2];
     double J_ij[3];
     int seed;
+    double T;
 } Config;
 
 int parse_args(int argc, char **argv, Config *cfg);

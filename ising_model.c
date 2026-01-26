@@ -23,8 +23,9 @@ int main(int argc, char *argv[])
 	Config cfg = {
 		    .out_mode = OUT_PLOT,
 		    .D_i = {0.0, 0.0},	//57.88 μeV
-		    .J_ij = {0.1, 1.0, -0.75},	//57.88 μeV
-		    .seed = 0
+		    .J_ij = {1.0, 3.0, -2.0},	//57.88 μeV
+		    .seed = 0,
+		    .T = 4.5	//T=1 ~ 0.672 K
 	};
     
 	int rc = parse_args(argc, argv, &cfg);
@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
 	int numberOfIterations;
 	double *fieldRoutine;
 	double B=0;	// [B]=[57.88 μeV] so that B=1 ~ 1 T (57.88 μeV/mu_B)
-	double k_B = 1.0, T = 6; // [T]=[57.88 μeV], T=1 ~ 0.672 K
+	double k_B = 1.0; // [T]=[57.88 μeV]
 	int i,j;
 	double energy, energy_flip, delta_energy;
 	bool event;
@@ -96,7 +97,7 @@ int main(int argc, char *argv[])
 			energy_flip = E(j, true, &newSpin, neighbors, nodes, B, cfg.D_i, cfg.J_ij);
 			delta_energy = energy_flip - energy;
 			
-			event = randDouble(0, 1) <= boltzmann(delta_energy, k_B, T);
+			event = randDouble(0, 1) <= boltzmann(delta_energy, k_B, cfg.T);
 			
 			if(delta_energy <= 0 || event){
 				if(newSpin == -999){

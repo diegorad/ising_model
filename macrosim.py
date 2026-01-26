@@ -1,0 +1,136 @@
+import subprocess
+import numpy as np
+import matplotlib.pyplot as plt
+
+from PySide6.QtWidgets import (
+    QApplication, QWidget, QVBoxLayout, QHBoxLayout,
+    QSlider, QLabel
+)
+from PySide6.QtCore import Qt, QPointF
+from PySide6.QtGui import QPainter, QColor, QPen
+
+
+class XYPad(QWidget):
+    def __init__(self, on_change):
+        super().__init__()
+        self.setMinimumSize(300, 300)
+
+        self.norm_x = 0.5
+        self.norm_y = 0.5
+
+        self.x = 0.0
+        self.y = 0.0
+
+        self.on_change = on_change
+
+    def mousePressEvent(self, event):
+        self.update_position(event)
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() & Qt.LeftButton:
+            self.update_position(event)
+
+    def update_position(self, event):
+        self.norm_x = min(max(event.position().x() / self.width(), 0), 1)
+        self.norm_y = min(max(1 - event.position().y() / self.height(), 0), 1)
+
+        self.x = 2 * self.norm_x - 1
+        self.y = 2 * self.norm_y - 1
+
+        self.on_change()
+        self.update()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        w, h = self.width(), self.height()
+
+        painter.fillRect(self.rect(), QColor(25, 25, 25))
+
+        axis_pen = QPen(QColor(120, 120, 120), 1)
+        painter.setPen(axis_pen)
+        painter.drawLine(w / 2, 0, w / 2, h)
+        painter.drawLine(0, h / 2, w, h / 2)
+
+        px = self.norm_x * w
+        py = (1 - self.norm_y) * h
+
+        dot_pen = QPen(QColor(255, 80, 80), 2)
+        painter.setPen(dot_pen)
+        painter.setBrush(QColor(255, 80, 80))
+        painter.drawEllipse(QPointF(px, py), 5, 5)
+
+
+class ControlPanel(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.z = 0.0
+
+        self.xy_pad = XYPad(self.run_simulation)
+
+        self.z_slider = QSlider(Qt.Horizontal)
+        self.z_slider.setRange(0, 1000)
+        self.z_slider.setValue(500)
+        self.z_slider.valueChanged.connect(self.update_z)
+
+        self.z_label = QLabel("z = 0.00")
+        self.z_label.setAlignment(Qt.AlignCenter)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.xy_pad)
+        layout.addWidget(self.z_label)
+        layout.addWidget(self.z_slider)
+
+        self.setLayout(layout)
+        self.setWindowTitle("XY + Z Parameter Control")
+
+    def update_z(self, value):
+        self.z = (2 * (value / 1000) - 1)*2
+        self.z_label.setText(f"z = {self.z:.2f}")
+#        self.run_simulation()
+
+    def run_simulation(self):
+        x = self.xy_pad.x
+        y = self.xy_pad.y
+        z = self.z
+
+        print(f"x={x:.3f}, y={y:.3f}, z={z:.3f}")
+
+        subprocess.run(
+            [
+                "python3",
+                "netgen.py",
+                "--S_0", "7",
+                "--ratio", "1",
+            ],
+            check=True
+        )
+		
+        subprocess.run(
+            [
+                "./ising_model",
+                "--out=monitor",
+                "--T=6",
+                f"--J_ij={{{x}, 2.3, {z}}}",
+                f"--D_i={{{y}, 0}}",
+            ],
+            check=True
+        )
+		
+        subprocess.run(
+            ["python3", "plot.py"],
+            check=True
+        )
+
+
+app = QApplication([])
+plt.ion()
+plt.show()
+
+panel = ControlPanel()
+panel.show()
+
+app.exec()
+
