@@ -6,6 +6,7 @@ from tools import *
 #Defaults
 size = 50
 ratio = 0.1
+periodic = False
 
 S_0 = 2
 S_1 = 1
@@ -24,6 +25,8 @@ while sys.argv:
 	if sys.argv[0] == "--S_1":
 		S_1 = int(sys.argv[1])
 		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--periodic":
+		periodic = True
 		
 	sys.argv = sys.argv[1:]
 
@@ -43,7 +46,7 @@ for i in [0, 1]:
 	for j in range(S[i] + 1):
 		S_z[i].append(-S[i] + 2*j)
 
-H = nx.grid_2d_graph(size, size)
+H = nx.grid_2d_graph(size, size, periodic=periodic)
 
 #Name nodes by index
 mapping = {node: i for i, node in enumerate(H.nodes())}
@@ -79,14 +82,15 @@ for i in [0,1]:
 	
 	nx.set_node_attributes(G, node_data)
 
-#Export net.edgelist
-print("Exporting edgelist to net.edgelist")
-nx.write_edgelist(G, "net.edgelist", data=False)
+##Export net.edgelist
+#print("Exporting edgelist to net.edgelist")
+#nx.write_edgelist(G, "net.edgelist", data=False)
 
 #Export net.dat
 print("Exporting node data to net.dat")
 nodeList = [(item[0], item[1]['type'], item[1]['spin']) for item in G.nodes(data=True)]
 with open("nodes.dat", "w") as f:
+    f.write(''.join(str(len(G.nodes()))+ '\n'))
     for item in nodeList:
         i, t ,s = item
         f.write(''.join(str(i) + ' ' + str(t) + ' ' + str(s)))
