@@ -7,3 +7,4 @@ ising_model
 Animations/
 *.mp4
 output.txt~
+.DS_Store

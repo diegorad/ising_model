@@ -14,7 +14,7 @@
 #define CURSOR_HOME  "\033[H"
 #define HIDE_CURSOR  "\033[?25l"
 #define SHOW_CURSOR  "\033[?25h"
-    
+ 
 int main(int argc, char *argv[])
 {	
 	//Default parameter values

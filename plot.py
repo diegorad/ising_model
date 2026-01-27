@@ -63,7 +63,7 @@ plt.plot(col1, col3)
 plt.xlabel("Column 1")
 plt.ylabel("Column 3")
 plt.title("Column 1 vs Column 3")
-plt.ylim(-2500, 2500)
+plt.ylim(y_min_padded, y_max_padded)
 plt.grid(True)
 
 plt.tight_layout()
