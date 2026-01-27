@@ -37,8 +37,9 @@ S = {0: S_0,	#Spin of species 0
 
 #Print info
 print(f"Size: {size}")
-print(f"Percentage elements: {ratio}, {1-ratio}")
+print(f"Percentage elements: {{0: {ratio}, 1: {1-ratio}}}")
 print(f"Spin: {S}")
+print(f"Periodic: {periodic}")
 
 #Calculate and populate allowed projections
 S_z = {0: [], 1: []}
