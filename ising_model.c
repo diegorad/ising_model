@@ -14,8 +14,6 @@
 #define CURSOR_HOME  "\033[H"
 #define HIDE_CURSOR  "\033[?25l"
 #define SHOW_CURSOR  "\033[?25h"
-
-#define lattice_size 50
     
 int main(int argc, char *argv[])
 {	
@@ -25,7 +23,7 @@ int main(int argc, char *argv[])
 		    .D_i = {0.0, 0.0},	//57.88 μeV
 		    .J_ij = {1.0, 3.0, -2.0},	//57.88 μeV
 		    .seed = 0,
-		    .T = 4.5	//T=1 ~ 0.672 K
+		    .T = 6	//T=1 ~ 0.672 K
 	};
     
 	int rc = parse_args(argc, argv, &cfg);
@@ -36,7 +34,7 @@ int main(int argc, char *argv[])
     
 	int **neighbors;
 	Node *nodes;
-	int N = lattice_size*lattice_size;
+	int N;
 	int numberOfIterations;
 	double *fieldRoutine;
 	double B=0;	// [B]=[57.88 μeV] so that B=1 ~ 1 T (57.88 μeV/mu_B)
@@ -52,7 +50,7 @@ int main(int argc, char *argv[])
 	f = fopen("output.txt", "w");
 	
 	//Load nodes
-	nodes = loadNodes("nodes.dat", N);
+	nodes = loadNodes("nodes.dat", &N);
 	
 	//Load neighbors
 	neighbors = loadIntegerList("neighbors.dat", N, 4);
@@ -80,7 +78,7 @@ int main(int argc, char *argv[])
 		if(cfg.out_mode == 2){
 			if (iter % 5 == 0){
 				printf(CURSOR_HOME);
-				print_lattice(nodes, lattice_size);
+				print_lattice(nodes, sqrt(N));
 			}
 		}
 		

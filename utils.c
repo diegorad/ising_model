@@ -13,7 +13,7 @@ double  E(int i, bool flip, int *newSpin, int **neighbors, Node *nodes, double h
 		do{
 			int random_index = rand() % len;
 			*newSpin = nodes[i].spin_z[random_index];
-		} while(*newSpin == spin);
+		} while(*newSpin == spin); //Force to choose a different one to the current
 		
 		spin = *newSpin;
 	}

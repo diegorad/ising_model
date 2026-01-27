@@ -19,7 +19,7 @@ typedef struct {
 int *createIntVector(int dim);
 double *createVector(int dim);
 int **createIntVectorList(int n, int m);
-Node* loadNodes(const char* filename, int N);
+Node* loadNodes(const char* filename, int *N);
 double *loadFloatList(char *fileName, int *sizeOfArray);
 int **loadIntegerList(char *fileName, int sizeOfArray, int dim);
 double randDouble(double min, double max);

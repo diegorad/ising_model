@@ -57,13 +57,15 @@ int **createIntVectorList(int n, int m){
 	return array;
 }
 
-Node* loadNodes(const char* filename, int N) {
+Node* loadNodes(const char* filename, int *N) {
     FILE* f = fopen(filename, "r");
     if (!f) return NULL;
-
-    Node* nodes = malloc(sizeof(Node) * N);
+	
+	fscanf(f, "%d", N);
+	
+    Node* nodes = malloc(sizeof(Node) * *N);
     
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < *N; i++) {
         fscanf(f, "%d %d %d",
                &nodes[i].index,
                &nodes[i].type,
@@ -161,20 +163,20 @@ void print_node(const Node* n)
     if (n->type == 0) {
         // Type 1: 3-state spin, symbol = ■
         if (n->spin == - (n->spin_value))
-            printf(LOW0   "■ " RESET);
+            printf(LOW0   "● " RESET);
         else if (n->spin == n->spin_value)
-            printf(HIGH0  "■ " RESET);
+            printf(HIGH0  "● " RESET);
         else
-            printf(MID0    "■ " RESET);
+            printf(MID0    "● " RESET);
 
     } else if (n->type == 1) {
         // Type 2: 2-state spin, symbol = ▲
         if (n->spin == - (n->spin_value))
-            printf(LOW1  "■ " RESET);
+            printf(LOW1  "● " RESET);
         else if (n->spin == n->spin_value)
-        	printf(HIGH1  "■ " RESET);
+        	printf(HIGH1  "● " RESET);
         else
-            printf(MID1 "■ " RESET);
+            printf(MID1 "● " RESET);
     }
 }
 
