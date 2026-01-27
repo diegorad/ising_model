@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 		    .D_i = {0.0, 0.0},	//57.88 μeV
 		    .J_ij = {1.0, 3.0, -2.0},	//57.88 μeV
 		    .seed = 0,
-		    .T = 6	//T=1 ~ 0.672 K
+		    .T = 6.0	//T=1 ~ 0.672 K
 	};
     
 	int rc = parse_args(argc, argv, &cfg);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 	
 	//Load neighbors
 	neighbors = loadIntegerList("neighbors.dat", N, 4);
-
+	
 	//Initialize spins
 	for(i=0;i<N;i++){
 		int random_index = rand() % (nodes[i].spin_value + 1);

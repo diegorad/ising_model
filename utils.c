@@ -17,23 +17,28 @@ double  E(int i, bool flip, int *newSpin, int **neighbors, Node *nodes, double h
 		
 		spin = *newSpin;
 	}
+
 	
 	D = D_i[nodes[i].type];
-		
+
 	//Sum of neighboring spins
 	for(j=0;j<4;j++){
+		//Skip when there's no neighbor
+		if(neighbors[i][j] == -1){
+			continue;
+		}
+		
 		//Rules for (anti)parallel coupling
 		if(nodes[i].type == nodes[neighbors[i][j]].type)
 			J = J_ij[nodes[i].type];
 		else
 			J = J_ij[2];
 			
-		if(neighbors[i][j] != -1)
-			sum += J * nodes[neighbors[i][j]].spin;
+		sum += J * nodes[neighbors[i][j]].spin;
 	}
-	
+
 	energy = - spin * sum - h * spin - D * spin * spin;
-	
+
 	return energy;
 }
 
