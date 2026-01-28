@@ -17,6 +17,9 @@ class XYPad(QWidget):
 
         self.norm_x = 0.5
         self.norm_y = 0.5
+        
+        self.x_range = 0.5
+        self.y_range = 3
 
         self.x = 0.0
         self.y = 0.0
@@ -33,9 +36,9 @@ class XYPad(QWidget):
     def update_position(self, event):
         self.norm_x = min(max(event.position().x() / self.width(), 0), 1)
         self.norm_y = min(max(1 - event.position().y() / self.height(), 0), 1)
-
-        self.x = 2 * self.norm_x - 1
-        self.y = 2 * self.norm_y - 1
+		
+        self.x = self.x_range * (2 * self.norm_x - 1)
+        self.y = self.y_range * (2 * self.norm_y - 1)
 
         self.on_change()
         self.update()
@@ -67,6 +70,10 @@ class ControlPanel(QWidget):
         super().__init__()
 
         self.z = 0.0
+        self.z_range = 3
+        
+        self.w = 0.0
+        self.w_range = 3
 
         self.xy_pad = XYPad(self.run_simulation)
 
@@ -74,36 +81,52 @@ class ControlPanel(QWidget):
         self.z_slider.setRange(0, 1000)
         self.z_slider.setValue(500)
         self.z_slider.valueChanged.connect(self.update_z)
+        
+        self.w_slider = QSlider(Qt.Horizontal)
+        self.w_slider.setRange(0, 1000)
+        self.w_slider.setValue(500)
+        self.w_slider.valueChanged.connect(self.update_w)
 
         self.z_label = QLabel("z = 0.00")
         self.z_label.setAlignment(Qt.AlignCenter)
+        
+        self.w_label = QLabel("w = 0.00")
+        self.w_label.setAlignment(Qt.AlignCenter)
 
         layout = QVBoxLayout()
         layout.addWidget(self.xy_pad)
         layout.addWidget(self.z_label)
         layout.addWidget(self.z_slider)
+        layout.addWidget(self.w_label)
+        layout.addWidget(self.w_slider)
 
         self.setLayout(layout)
-        self.setWindowTitle("XY + Z Parameter Control")
+        self.setWindowTitle("XY + Z + W Parameter Control")
 
     def update_z(self, value):
-        self.z = (2 * (value / 1000) - 1)*2
+        self.z = self.z_range * (2 * (value / 1000) - 1)
         self.z_label.setText(f"z = {self.z:.2f}")
 #        self.run_simulation()
+
+    def update_w(self, value):
+        self.w = self.w_range * (2 * (value / 1000) - 1)
+        self.w_label.setText(f"w = {self.w:.2f}")
 
     def run_simulation(self):
         x = self.xy_pad.x
         y = self.xy_pad.y
         z = self.z
+        w = self.w
 
-        print(f"x={x:.3f}, y={y:.3f}, z={z:.3f}")
+        print(f"x={x:.3f}, y={y:.3f}, z={z:.3f}, w={w:.3f}")
 
         subprocess.run(
             [
                 "python3",
                 "netgen.py",
-                "--S_0", "7",
-                "--ratio", "1",
+                "--S_0", "4",
+                "--ratio", "0.35",
+                "--periodic",
             ],
             check=True
         )
@@ -113,8 +136,8 @@ class ControlPanel(QWidget):
                 "./ising_model",
                 "--out=monitor",
                 "--T=6",
-                f"--J_ij={{{x}, 2.3, {z}}}",
-                f"--D_i={{{y}, 0}}",
+                f"--J_ij={{{x}, {y}, {z}}}",
+                f"--D_i={{{w}, 0}}",
             ],
             check=True
         )
