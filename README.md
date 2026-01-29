@@ -3,7 +3,7 @@ Implementation of the Ising model written in C along with tools to prepare the s
 
 Energy of a spin $i$:
 
-$E_i=-\sigma_i \sum_{j} J_{ij}\sigma_j-\sigma_i H-\sigma_i^2D$
+$E_i=-\sigma_i \sum_{j} J_{ij}\sigma_j-\sigma_i H-\sigma_i^2D_i$
 
 Basic usage:
 
