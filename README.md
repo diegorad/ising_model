@@ -10,3 +10,4 @@ Basic usage:
 1) Generate the spin lattice with `netgen.py`
 1) Generate a field routine with `fieldgen.py`
 1) Run simulation over the defined field routine with `ising_model`	 
+1) Plot result with `plot.py`
