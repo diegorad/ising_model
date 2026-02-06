@@ -12,6 +12,7 @@ sys.argv = sys.argv[1:]
 savefig = False
 label = None
 timePlot = False
+total_magnetization = False
 
 while sys.argv:
 	if sys.argv[0] == "--savefig":
@@ -21,6 +22,8 @@ while sys.argv:
 		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--time":
 		timePlot = True
+	if sys.argv[0] == "--total":
+		total_magnetization = True
 		
 	sys.argv = sys.argv[1:]
 
@@ -84,6 +87,30 @@ if(timePlot):
 	plt.grid(True)
 	
 	plt.tight_layout()
+
+if(total_magnetization):
+	plt.cla()
+	
+	plt.subplot(1, 2, 1)
+	plt.plot(col1, col2)
+	plt.xlabel("h")
+	plt.ylabel("M")
+	plt.title("Magnetization")
+	plt.ylim(y_min_padded, y_max_padded)
+	plt.grid(True)
+	
+	plt.subplot(1, 2, 1)
+	plt.plot(col1, col3)
+	
+	# Plot total magnetization
+	plt.subplot(1, 2, 2)
+	total_m = [i+j for i,j in zip(col2,col3)]
+	plt.plot(col1, total_m)
+	plt.xlabel("h")
+	plt.ylabel("M")
+	plt.title("Total magnetization")
+#	plt.ylim(y_min_padded, y_max_padded)
+	plt.grid(True)
 	
 if(savefig):
 	plt.savefig('plot.png')
