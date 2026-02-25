@@ -57,6 +57,21 @@ int **createIntVectorList(int n, int m){
 	return array;
 }
 
+double **createVectorList(int n, int m){
+	double **array;
+	int i;
+	
+	if((array=(double **)malloc(n*sizeof(double*)))==NULL){
+		printf("Error allocating memory \n");
+		exit(1);
+	}
+	
+	for(i=0;i<n;i++)
+		array[i]=createVector(m);
+	
+	return array;
+}
+
 Node* loadNodes(const char* filename, int *N) {
     FILE* f = fopen(filename, "r");
     if (!f) return NULL;
@@ -83,10 +98,11 @@ Node* loadNodes(const char* filename, int *N) {
     return nodes;
 }
 
-double *loadFloatList(char *fileName, int *sizeOfArray)
+double **loadFloatList(char *fileName, int *sizeOfArray)
 {
-	int i;
-	double *list;
+	int i,j;
+	int dim;
+	double **list;
 	FILE *input;
 	
 	if((input=fopen(fileName,"r"))==NULL)
@@ -96,16 +112,22 @@ double *loadFloatList(char *fileName, int *sizeOfArray)
 	}
 	
 	if(fscanf(input,"%d",&*sizeOfArray) != 1)
-		printf("Error in %s file on line 1: Number of entries on file cannot be retrived.\n", fileName);
-		
-	list=createVector(*sizeOfArray);
+		printf("Error in %s file on line 1: Array dimension from file cannot be retrived.\n", fileName);
+	
+	if(fscanf(input,"%d", &dim) != 1)
+		printf("Error in %s file on line 1: Array dimension from file cannot be retrived.\n", fileName);
+	
+	list=createVectorList(*sizeOfArray, dim);
 	
 	for(i=0;i<*sizeOfArray;i++)
-	if(fscanf(input,"%le",&list[i])<=0)
-		{printf("loadFloatList::Error allocating memory.\n");
-		exit(1);
-		}
-		
+		for(j=0;j<dim;j++)
+			if(fscanf(input,"%le",&list[i][j])<=0){
+				printf("loadFloatList::Error allocating memory.\n");
+				exit(1);
+				}
+	
+	fclose(input);
+	
 	return list;
 }
 

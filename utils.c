@@ -57,3 +57,14 @@ int sumSpins(int N, Node *nodes, int type)
 	
 	return sum;
 }
+
+double total_E(int N, int **neighbors, Node *nodes, double B, double *D_i, double *J_ij){
+	double energy = 0;
+	int newSpin;
+	
+	for(int i=0;i<N;i++){
+		energy += E(i, false, &newSpin, neighbors, nodes, B, D_i, J_ij);
+	}
+	
+	return energy;
+}

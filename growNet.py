@@ -19,7 +19,8 @@ def prune_degree_one_nodes(G):
 size = 250
 ratio = 0.35
 S = {0: 1, 1: 4}
-replacement = 0.15
+replacement = 0
+show = False
 #################
 
 #Argument parsing
@@ -38,6 +39,9 @@ while sys.argv:
 		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--replacement":
 		replacement = float(sys.argv[1])
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--show":
+		show = True
 		sys.argv = sys.argv[1:]
 	
 	sys.argv = sys.argv[1:]
@@ -67,7 +71,7 @@ while len(G) < n_nodes:
 			(x + dx, y + dy) in G
 			for dx, dy in directions
 		)
-		weights.append((w + 1) ** 3)  # +1 avoids zero probability
+		weights.append((w + 1) ** 5)  # +1 avoids zero probability
 
 	new_node = random.choices(candidates, weights=weights, k=1)[0]
 	frontier.remove(new_node)
@@ -133,22 +137,23 @@ with open("neighbors.dat", "w") as f:
 			f.write(''.join(str(neighbor)+' '))
 		f.write('\n')
 
-color_map = {
-	0: "black",
-	1: "red"
-}
+if(show):
+	color_map = {
+		0: "black",
+		1: "red"
+	}
 
-node_colors = [color_map[H.nodes[n]['type']] for n in H.nodes()]
-coords = {node: H.nodes[node]['pos'] for node in H.nodes()}
+	node_colors = [color_map[H.nodes[n]['type']] for n in H.nodes()]
+	coords = {node: H.nodes[node]['pos'] for node in H.nodes()}
 
-plt.figure(figsize=(6, 6))
-nx.draw(
-	H,
-	pos=coords,
-	node_size=30,
-	node_color=node_colors,
-	edge_color="gray",
-	with_labels=False
-)
-plt.axis("equal")
-plt.show()
+	plt.figure(figsize=(6, 6))
+	nx.draw(
+		H,
+		pos=coords,
+		node_size=30,
+		node_color=node_colors,
+		edge_color="gray",
+		with_labels=False
+	)
+	plt.axis("equal")
+	plt.show()

@@ -1,16 +1,16 @@
 import numpy as np
 import sys
 
-index = sys.argv[1]
-threshold = 500
+threshold = 10
 numberOfPoints = 1000
+rounding = 4
 
 # Load data
 col1 = []
 col2 = []
 col3 = []
 
-with open("output.txt".format(index), "r") as f:
+with open("output.txt", "r") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) == 3:
@@ -19,13 +19,19 @@ with open("output.txt".format(index), "r") as f:
             col2.append(b)
             col3.append(c)
             
-data = np.array([col1, col3]).T
+data = np.array([col1, col2]).T
 
-halfBranchLenght = int(numberOfPoints/5)
+numberOfPoints = len(data)
+
+halfBranchLenght = int(numberOfPoints/4)
 
 down = data[halfBranchLenght:3*halfBranchLenght]
-down_zero = down[np.abs(down[:, 1]) <= threshold]
+down_near_zero = down[np.abs(down[:, 1]) <= threshold]
 
 up = data[3*halfBranchLenght:numberOfPoints]
-up_zero = up[np.abs(up[:, 1]) <= threshold]
-print(round(sum(down_zero.T[0])/len(down_zero.T[0]),2), round(sum(up_zero.T[0])/len(up_zero.T[0]),2))
+up_near_zero = up[np.abs(up[:, 1]) <= threshold]
+
+down_zero = sum(down_near_zero.T[0])/len(down_near_zero.T[0])
+up_zero = sum(up_near_zero.T[0])/len(up_near_zero.T[0])
+
+print(f"Down={round(down_zero, rounding)}, Up={round(up_zero, rounding)}, diff={round(up_zero-abs(down_zero), rounding)}")

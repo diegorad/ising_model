@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 		    .D_i = {0.0, 0.0},	//57.88 μeV
 		    .J_ij = {1.0, 3.0, -2.0},	//57.88 μeV
 		    .seed = 0,
-		    .T = 6.0	//T=1 ~ 0.672 K
+		    .T = -1	//T=-1 flags no T overwriting
 	};
     
 	int rc = parse_args(argc, argv, &cfg);
@@ -36,11 +36,12 @@ int main(int argc, char *argv[])
 	Node *nodes;
 	int N;
 	int numberOfIterations;
-	double *fieldRoutine;
-	double B=0;	// [B]=[57.88 μeV] so that B=1 ~ 1 T (57.88 μeV/mu_B)
+	double **routine;
+	double B = 0;	// [B]=[57.88 μeV] so that B=1 ~ 1 Tesla (57.88 μeV/mu_B)
 	double k_B = 1.0; // [T]=[57.88 μeV]
+	double T = 0; //T=1 ~ 0.672 K, T_real = T*(57.88 μeV/k_B_real)
 	int i,j;
-	double energy, energy_flip, delta_energy;
+	double energy, energy_flip, delta_energy, total_energy;
 	bool event;
 	FILE *f;
 
@@ -58,11 +59,12 @@ int main(int argc, char *argv[])
 	//Initialize spins
 	for(i=0;i<N;i++){
 		int random_index = rand() % (nodes[i].spin_value + 1);
-		nodes[i].spin = nodes[i].spin_z[random_index];
+		nodes[i].spin = nodes[i].spin_z[random_index]; //Random distribution 
+/*		nodes[i].spin = nodes[i].spin_value; //All up*/
 	}
 	
 	//Load field routine
-	fieldRoutine = loadFloatList("field.dat", &numberOfIterations);
+	routine = loadFloatList("field.dat", &numberOfIterations);
 	
 	//PLOT BEGIN
 	if(cfg.out_mode == 2){
@@ -71,8 +73,12 @@ int main(int argc, char *argv[])
 	}
 	
 	for(int iter = 0;iter<numberOfIterations;iter++){
-		//Field routine
-		B = fieldRoutine[iter];
+		B = routine[iter][0];	//Field routine
+		
+		if(cfg.T == -1)
+			T = routine[iter][1];	//Temperature routine
+		else
+			T = cfg.T;
 	
 		//PLOT
 		if(cfg.out_mode == 2){
@@ -81,6 +87,9 @@ int main(int argc, char *argv[])
 				print_lattice(nodes, sqrt(N));
 			}
 		}
+		
+		//Total energy
+		total_energy = total_E(N, neighbors, nodes, B, cfg.D_i, cfg.J_ij);
 		
 		//OUTPUT
 		if(cfg.out_mode == 1)
@@ -95,7 +104,7 @@ int main(int argc, char *argv[])
 			energy_flip = E(j, true, &newSpin, neighbors, nodes, B, cfg.D_i, cfg.J_ij);
 			delta_energy = energy_flip - energy;
 			
-			event = randDouble(0, 1) <= boltzmann(delta_energy, k_B, cfg.T);
+			event = randDouble(0, 1) <= boltzmann(delta_energy, k_B, T);
 			
 			if(delta_energy <= 0 || event){
 				if(newSpin == -999){
@@ -109,7 +118,7 @@ int main(int argc, char *argv[])
 		//MONITOR
 		if(cfg.out_mode == 0 || cfg.out_mode == 2)
 			if (iter % 5 == 0){
-				printf("Step: %d  B: %.3f\r", iter, B);
+				printf("Step: %d  B: %.3f  T: %.3f\r", iter, B, T);
 				if(cfg.out_mode == 2){
 					fflush(stdout);
 					usleep(100000);

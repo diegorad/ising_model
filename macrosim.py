@@ -18,7 +18,7 @@ class XYPad(QWidget):
         self.norm_x = 0.5
         self.norm_y = 0.5
         
-        self.x_range = 0.5
+        self.x_range = 3
         self.y_range = 3
 
         self.x = 0.0
@@ -70,10 +70,10 @@ class ControlPanel(QWidget):
         super().__init__()
 
         self.z = 0.0
-        self.z_range = 3
+        self.z_range = 1
         
         self.w = 0.0
-        self.w_range = 3
+        self.w_range = 1
 
         self.xy_pad = XYPad(self.run_simulation)
 
@@ -120,13 +120,27 @@ class ControlPanel(QWidget):
 
         print(f"x={x:.3f}, y={y:.3f}, z={z:.3f}, w={w:.3f}")
 
+#        subprocess.run(
+#            [
+#                "python3",
+#                "netgen.py",
+#                "--S_0", "7",
+#                "--ratio", "1",
+#                "--size", "100",
+#                "--periodic",
+#            ],
+#            check=True
+#        )
+
         subprocess.run(
             [
                 "python3",
-                "netgen.py",
-                "--S_0", "4",
-                "--ratio", "0.35",
-                "--periodic",
+                "growNet.py",
+                "--S_0", "1",
+                "--S_1", "4",
+                "--ratio", f"{w}",
+                "--size", "1000",
+                "--replacement", f"{z}",
             ],
             check=True
         )
@@ -135,9 +149,9 @@ class ControlPanel(QWidget):
             [
                 "./ising_model",
                 "--out=monitor",
-                "--T=6",
-                f"--J_ij={{{x}, {y}, {z}}}",
-                f"--D_i={{{w}, 0}}",
+                f"--T=6",
+                f"--J_ij={{{x}, 0.2, {y}}}",
+                f"--D_i={{0, -1}}",
             ],
             check=True
         )
