@@ -15,6 +15,7 @@ label = None
 timePlot = False
 total_magnetization = False
 susceptibility = False
+trim = 0
 
 while sys.argv:
 	if sys.argv[0] == "--savefig":
@@ -28,6 +29,9 @@ while sys.argv:
 		total_magnetization = True
 	if sys.argv[0] == "--susceptibility":
 		susceptibility = True
+	if sys.argv[0] == "--trim":
+		trim = int(sys.argv[1])
+		sys.argv = sys.argv[1:]
 		
 	sys.argv = sys.argv[1:]
 if(susceptibility == False):
@@ -39,6 +43,10 @@ if(susceptibility == False):
 		        col1.append(a)
 		        col2.append(b)
 		        col3.append(c)
+	
+	col1 = col1[trim:]
+	col2 = col2[trim:]
+	col3 = col3[trim:]
 	
 	# Compute global Y limits across columns 2 and 3
 	y_min = min(min(col2), min(col3))

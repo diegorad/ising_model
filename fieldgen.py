@@ -12,23 +12,27 @@ def ramp(routine, start_h, stop_h, start_T, stop_T, iterations):
 routine = []
 
 #Field routine
-fieldRange = float(sys.argv[1])
-rate = float(sys.argv[2]) #T/iteration
-steps = int(fieldRange/rate)
+#fieldRange = float(sys.argv[1])
+#rate = float(sys.argv[2]) #T/iteration
+#steps = int(fieldRange/rate)
 
-ramp(routine, -6, -6, 25, 6, 200)
-ramp(routine, -6, -2.5, 6, 6, 200)
-ramp(routine, -2.5, -2.5, 6, 6, 200)
-#ramp(routine, 0, 2.5, 6, 6, 200)
-ramp(routine, -2.5, 2.5, 6, 6, 400)
-ramp(routine, 2.5, -2.5, 6, 6, 400)
+#Positive
+ramp(routine, 6, 6, 25, 6, 200)
+ramp(routine, 6, 2, 6, 6, 200)
 
-ramp(routine, -2.5, 2.5, 6, 6, 400)
-ramp(routine, 2.5, -2.5, 6, 6, 400)
+ramp(routine, 2, 2, 6, 6, 200)
 
-ramp(routine, -2.5, 2.5, 6, 6, 400)
-ramp(routine, 2.5, -2.5, 6, 6, 400)
+ramp(routine, 2, -2, 6, 6, 400)
+ramp(routine, -2, 2, 6, 6, 400)
 
+##Negative
+#ramp(routine, -6, -6, 25, 6, 200)
+#ramp(routine, -6, -2, 6, 6, 200)
+
+#ramp(routine, -2, -2, 6, 6, 200)
+
+#ramp(routine, -2, 2, 6, 6, 400)
+#ramp(routine, 2, -2, 6, 6, 400)
 
 #values.extend(ramp(fieldRange, fieldRange, int(fieldRange/rate)))
 #values.extend(ramp(fieldRange, -fieldRange, int(fieldRange*2/rate)))
