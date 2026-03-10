@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 
 def ramp(routine, start_h, stop_h, start_T, stop_T, iterations):
@@ -9,21 +11,37 @@ def ramp(routine, start_h, stop_h, start_T, stop_T, iterations):
     )
     return
 
+field_rate = None
+field_range = None
+
+while sys.argv:
+	if sys.argv[0] == "--rate":
+		field_rate = float(sys.argv[1])
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--range":
+		field_range = float(sys.argv[1])
+		sys.argv = sys.argv[1:]
+
+	sys.argv = sys.argv[1:]
+
 routine = []
 
-#Field routine
-#fieldRange = float(sys.argv[1])
-#rate = float(sys.argv[2]) #T/iteration
-#steps = int(fieldRange/rate)
+if field_range != None and field_rate != None:
+	steps = int(field_range/field_rate)
 
-#Positive
-ramp(routine, 6, 6, 25, 6, 200)
-ramp(routine, 6, 2, 6, 6, 200)
+#Loop
+ramp(routine, 0, field_range, 6, 6, steps)
+ramp(routine, field_range, -field_range, 6, 6, steps*2)
+ramp(routine, -field_range, field_range, 6, 6, steps*2)
 
-ramp(routine, 2, 2, 6, 6, 200)
+##Positive
+#ramp(routine, 0, 6, 25, 6, 480)
+#ramp(routine, 6, 2, 6, 6, 200)
 
-ramp(routine, 2, -2, 6, 6, 400)
-ramp(routine, -2, 2, 6, 6, 400)
+#ramp(routine, 2, 2, 6, 6, 200)
+
+#ramp(routine, 2, -2, 6, 6, 400)
+#ramp(routine, -2, 2, 6, 6, 400)
 
 ##Negative
 #ramp(routine, -6, -6, 25, 6, 200)
@@ -43,6 +61,7 @@ ramp(routine, -2, 2, 6, 6, 400)
 #values.extend(ramp(-0.0, 0.0, 1000))
 
 #Export
+print(f"Writing field to field.dat. Rate: {field_rate}, Range: {field_range}")
 with open("field.dat", "w") as f:
     f.write(f"{len(routine)} 2\n")
     for field, T in routine:

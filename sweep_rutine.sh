@@ -18,10 +18,10 @@ printf -v val "%0.5f" $2
 	val1="$(calc 0.5 + 0*$2)"
 	val2="$(calc $2*0.5 - 1.2)"
 
-#	python3 netgen.py --ratio $val --size 50 --S_0 1 --S_1 4 --periodic >/dev/null
-	python3 growNet.py --size 250 --S_0 1 --S_1 3 >/dev/null
+	python3 netgen.py --ratio 0 --S_0 1 --S_1 4 --size 50 >/dev/null
+#	python3 growNet.py --size 250 --S_0 1 --S_1 3 >/dev/null
 
-	./ising_model --J_ij="{2.7, -1, 2}" --out=output --seed=$1 > output.txt
+	./ising_model --J_ij="{3.4, 0.2, -1.8}" --D_i="{0, -0.9}" --out=output --seed=$1 > output.txt
 #	echo "$val $(python3 average.py --susceptibility --T $val)" >> ../susceptibility.txt
 #	python3 plot.py --total --savefig --label "Ratio=$val"
 #	cp plot.png ../plot_serie/plot_$1.png

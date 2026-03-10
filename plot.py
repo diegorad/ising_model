@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import matplotlib.pyplot as plt
 import numpy as np
 import addcopyfighandler
@@ -34,6 +36,7 @@ while sys.argv:
 		sys.argv = sys.argv[1:]
 		
 	sys.argv = sys.argv[1:]
+	
 if(susceptibility == False):
 	with open("output.txt", "r") as f:
 		for line in f:
@@ -45,8 +48,8 @@ if(susceptibility == False):
 		        col3.append(c)
 	
 	col1 = col1[trim:]
-	col2 = col2[trim:]
-	col3 = col3[trim:]
+	col2 = np.array(col2[trim:])
+	col3 = np.array(col3[trim:])
 	
 	# Compute global Y limits across columns 2 and 3
 	y_min = min(min(col2), min(col3))

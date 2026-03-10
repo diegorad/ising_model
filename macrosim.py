@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
+import re
 
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout,
@@ -18,8 +21,8 @@ class XYPad(QWidget):
         self.norm_x = 0.5
         self.norm_y = 0.5
         
-        self.x_range = 3
-        self.y_range = 3
+        self.x_range = 0.5
+        self.y_range = 2
 
         self.x = 0.0
         self.y = 0.0
@@ -70,7 +73,7 @@ class ControlPanel(QWidget):
         super().__init__()
 
         self.z = 0.0
-        self.z_range = 1
+        self.z_range = 5
         
         self.w = 0.0
         self.w_range = 1
@@ -112,54 +115,65 @@ class ControlPanel(QWidget):
         self.w = self.w_range * (2 * (value / 1000) - 1)
         self.w_label.setText(f"w = {self.w:.2f}")
 
+    def run_line(self, line):
+        comm = line.split(" ")	
+        subprocess.run(comm, check=True)
+	
     def run_simulation(self):
         x = self.xy_pad.x
         y = self.xy_pad.y
         z = self.z
         w = self.w
 
-        print(f"x={x:.3f}, y={y:.3f}, z={z:.3f}, w={w:.3f}")
+        self.run_line("./fieldgen.py --rate 0.015 --range 6")        
+        self.run_line(f"python3 netgen.py --ratio 0 --size 50 --S_0 1 --S_1 4")
+        self.run_line(f'./ising_model --J_ij={{3.4,{x},{z}}} --D_i={{0,{y}}} --out=monitor')
+        self.run_line("./fig_plot.py --trim --column 2 --xRange -6 6")
+        
+        self.run_line(f"python3 netgen.py --ratio 1 --size 50 --S_0 1 --S_1 4")
+        self.run_line(f'./ising_model --J_ij={{3.4,{x},{z}}} --D_i={{0,{y}}} --out=monitor')
+        self.run_line("./fig_plot.py --trim --column 1 --name nitcne_hyst")
+        
+        self.run_line(f"python3 netgen.py --ratio {w} --size 50 --S_0 1 --S_1 4")
+        self.run_line("./fieldgen.py --rate 0.015 --range 2.5")
+        self.run_line(f'./ising_model --J_ij={{3.5,{x},{z}}} --D_i={{0,{y}}} --out=monitor')
+        self.run_line("./fig_plot.py --trim --column 2 --name fe_hyst")
+        self.run_line("./fig_plot.py --trim --column 1 --name ni_hyst")
+        
+        self.run_line(f"python3 netgen.py --ratio 0.4 --size 50 --S_0 1 --S_1 4")
+        self.run_line(f'./ising_model --J_ij={{3.5,{x},{z}}} --D_i={{0,{y}}} --out=monitor')
+        self.run_line("./fig_plot.py --trim --column 2 --name nife_fe_04_hyst")
+        self.run_line("./fig_plot.py --trim --column 1 --name nife_04_hyst --normalize 2 --yRange -1.2 1.2")
+
+		print(f"x={x:.3f}, y={y:.3f}, z={z:.3f}, w={w:.3f}")
 
 #        subprocess.run(
 #            [
 #                "python3",
-#                "netgen.py",
-#                "--S_0", "7",
-#                "--ratio", "1",
-#                "--size", "100",
-#                "--periodic",
+#                "growNet.py",
+#                "--S_0", "1",
+#                "--S_1", "4",
+#                "--ratio", f"{w}",
+#                "--size", "1000",
+#                "--replacement", f"{z}",
 #            ],
 #            check=True
 #        )
-
-        subprocess.run(
-            [
-                "python3",
-                "growNet.py",
-                "--S_0", "1",
-                "--S_1", "4",
-                "--ratio", f"{w}",
-                "--size", "1000",
-                "--replacement", f"{z}",
-            ],
-            check=True
-        )
 		
-        subprocess.run(
-            [
-                "./ising_model",
-                "--out=monitor",
-                f"--T=6",
-                f"--J_ij={{{x}, 0.2, {y}}}",
-                f"--D_i={{0, -1}}",
-            ],
-            check=True
-        )
-		
-        subprocess.run(
-            ["python3", "plot.py"],
-            check=True
-        )
+#        subprocess.run(
+#            [
+#                "./ising_model",
+#                "--out=monitor",
+#                f"--J_ij={{3.5, {x}, {y}}}",
+#                f"--D_i={{0, {z}}}",
+#            ],
+#            check=True
+#        )
+#		
+#        subprocess.run(
+#            ["python3", "plot.py&"],
+#            check=True
+#        )
 
 
 app = QApplication([])

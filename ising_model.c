@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 		    .D_i = {0.0, 0.0},	//57.88 μeV
 		    .J_ij = {1.0, 3.0, -2.0},	//57.88 μeV
 		    .seed = 0,
-		    .T = -1	//T=-1 flags no T overwriting
+		    .T = -1	//T=-1 flags no T overwriting from --T argument
 	};
     
 	int rc = parse_args(argc, argv, &cfg);
