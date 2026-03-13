@@ -17,7 +17,7 @@ numStep="$(calc $range/$(($nSteps-1)))"
 rm -r plot_serie 2> /dev/null
 rm -r output_serie 2> /dev/null
 rm -r data_* 2> /dev/null
-rm susceptibility.txt
+rm -f susceptibility.txt
 mkdir plot_serie 2> /dev/null
 mkdir output_serie 2> /dev/null
 

@@ -61,7 +61,7 @@ ramp(routine, -field_range, field_range, 6, 6, steps*2)
 #values.extend(ramp(-0.0, 0.0, 1000))
 
 #Export
-print(f"Writing field to field.dat. Rate: {field_rate}, Range: {field_range}")
+print(f"Writing field to field.dat. Rate: {round(field_rate,4)}, Range: {round(field_range,4)}")
 with open("field.dat", "w") as f:
     f.write(f"{len(routine)} 2\n")
     for field, T in routine:

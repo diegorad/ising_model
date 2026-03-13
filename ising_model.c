@@ -127,8 +127,10 @@ int main(int argc, char *argv[])
 	}
 	
 	//Clear
-	if(cfg.out_mode == 0)
+	if(cfg.out_mode == 0){
 		printf("\r");
+		printf("J_ij: {%.3f, %.3f, %.3f}, D_i: {%.3f, %.3f}\n", cfg.J_ij[0], cfg.J_ij[1], cfg.J_ij[2], cfg.D_i[0], cfg.D_i[1]);	
+	}
 	
 	//Close output file
 	fclose(f); 
