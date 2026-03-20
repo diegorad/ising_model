@@ -9,8 +9,14 @@ typedef enum {
     OUT_PLOT
 } OutputMode;
 
+typedef enum {
+    RAND,
+    SAT
+} InitMode;
+
 typedef struct {
     OutputMode out_mode;
+    InitMode init_mode;
     double D_i[2];
     double J_ij[3];
     int seed;

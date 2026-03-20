@@ -9,22 +9,35 @@ avg_files = True
 avg_time = False
 susceptibility = False
 T = None
+size = None
+trim = False
+trim_amount = None
+
+mode = "files"
 
 while sys.argv:
 	if sys.argv[0] == "--files":
-		avg_files = True
+		mode = "files"
 	if sys.argv[0] == "--time":
-		avg_time = True
-		avg_files = False
-	if sys.argv[0] == "--susceptibility":
-		susceptibility = True
-		avg_files = False
+		mode = "time"
+	if sys.argv[0] == "--susceptibility" or sys.argv[0] == "-s":
+		mode = "susceptibility"
 	if sys.argv[0] == "--T":
 		T = float(sys.argv[1])
 		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--size":
+		size = float(sys.argv[1])
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--trim":
+		trim = True
+		if len(sys.argv) > 1:
+		    if "--" not in sys.argv[1]:
+			    trim_amount = int(sys.argv[1])
+			    sys.argv = sys.argv[1:]
+			    
 	sys.argv = sys.argv[1:]
-	
-if(avg_files):
+
+if(mode == "files"):
 	# Get all files in the folder
 	files = glob.glob("output_serie/*.txt")
 
@@ -51,20 +64,28 @@ if(avg_files):
 
 	print("Done! Saved as output.txt")
 
-if(avg_time):
+if(mode == "time"):
 	data = np.loadtxt("output.txt")
 
-	mean_col2 = np.mean(data[1000:, 1])
-	mean_col3 = np.mean(data[1000:, 2])
+	mean_col2 = np.mean(data[trim_amount:, 1])
+	mean_col3 = np.mean(data[trim_amount:, 2])
 
 	print(mean_col2, mean_col3)
 	
-if(susceptibility and T != None):
+if(mode == "susceptibility" and T != None and size != None):
 	data = np.loadtxt("output.txt")
 	
-	M0 = data[100:, 1]
-	M1 = data[100:, 2]
+	#Trim
+	if trim:
+	    if trim_amount == None:
+	        #Delete 1/5 of the data: Initial branch
+	        trim_amount = int(len(data)/5)
+	else:
+	    trim_amount = 0
 	
-	M = [x + y for x, y in zip(M0, M1)]
+	M0 = data[trim_amount:, 1]
+	M1 = data[trim_amount:, 2]
 	
-	print(1/T * np.var(M))
+	M = [(x + y)/pow(size,2) for x, y in zip(M0, M1)]
+	
+	print(np.mean(M), pow(size,2)/T * np.var(M))

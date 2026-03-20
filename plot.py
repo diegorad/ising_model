@@ -14,11 +14,11 @@ sys.argv = sys.argv[1:]
 
 savefig = False
 label = None
-timePlot = False
-total_magnetization = False
-susceptibility = False
 trim = False
 trim_amount = None
+file_name_arg = None
+
+plot_mode = "loop"
 
 while sys.argv:
 	if sys.argv[0] == "--savefig":
@@ -26,12 +26,17 @@ while sys.argv:
 	if sys.argv[0] == "--label":
 		label = sys.argv[1]
 		sys.argv = sys.argv[1:]
-	if sys.argv[0] == "--time":
-		timePlot = True
+	if sys.argv[0] == "--file" or sys.argv[0] == "-f":
+		file_name_arg = sys.argv[1]
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--time" or sys.argv[0] == "-t":
+		plot_mode = "time"
 	if sys.argv[0] == "--total":
-		total_magnetization = True
-	if sys.argv[0] == "--susceptibility":
-		susceptibility = True
+		plot_mode = "total_magnetization"
+	if sys.argv[0] == "--avg_mag":
+		plot_mode = "average_magnetization"
+	if sys.argv[0] == "--susceptibility" or sys.argv[0] == "-s":
+		plot_mode = "susceptibility"
 	if sys.argv[0] == "--trim":
 		trim = True
 		if len(sys.argv) > 1:
@@ -41,8 +46,13 @@ while sys.argv:
 		
 	sys.argv = sys.argv[1:]
 	
-if(susceptibility == False):
-	with open("output.txt", "r") as f:
+if(plot_mode == "loop" or plot_mode == "time" or plot_mode == "total_magnetization"):
+	if(file_name_arg == None):
+		file_name = "output.txt"
+	else:
+		file_name = file_name_arg
+	
+	with open(file_name, "r") as f:
 		for line in f:
 		    parts = line.strip().split()
 		    if len(parts) == 3:
@@ -98,7 +108,7 @@ if(susceptibility == False):
 
 	plt.tight_layout()
 
-if(timePlot):
+if(plot_mode == "time"):
 	plt.close()
 	plt.figure(figsize=(10, 4))
 	plt.suptitle(label)
@@ -115,7 +125,7 @@ if(timePlot):
 	
 	plt.tight_layout()
 
-if(total_magnetization):
+if(plot_mode == "total_magnetization"):
 	plt.cla()
 	
 	plt.subplot(1, 2, 1)
@@ -139,29 +149,50 @@ if(total_magnetization):
 #	plt.ylim(y_min_padded, y_max_padded)
 	plt.grid(True)
 
-if(susceptibility):
+if(plot_mode == "susceptibility"):
+	if(file_name_arg == None):
+		file_name = "susceptibility.txt"
+	else:
+		file_name = file_name_arg
+		
 	x = []
-	y = []
+	y1 = []
+	y2 = []
 	
-	with open("susceptibility.txt", "r") as f:
+	with open(file_name, "r") as f:
 		for line in f:
 		    parts = line.strip().split()
-		    if len(parts) == 2:
-		        a, b = map(float, parts)
+		    if len(parts) == 3:
+		        a, b, c = map(float, parts)
 		        x.append(a)
-		        y.append(b)
+		        y1.append(b)
+		        y2.append(c)
 	
 	# get sorting indices from x
 	idx = np.argsort(x)
 	
 	# reorder both arrays
 	x = np.array(x)[idx]
-	y = np.array(y)[idx]
-
-	plt.plot(x, y)
-	plt.xlabel("T")
-	plt.ylabel("X")
+	y1 = np.array(y1)[idx]
+	y2 = np.array(y2)[idx]
+	
+	plt.close()
+	plt.figure(figsize=(10, 4))
+	plt.suptitle(label)
+	
+	plt.subplot(1, 2, 1)
+#	plt.xlabel("N")
+	plt.ylabel("<M>")
+	plt.plot(x, y1, marker = "o", linestyle='None')
 	plt.grid(True)
+	
+	plt.subplot(1, 2, 2)
+#	plt.xlabel("N")
+	plt.ylabel("X")
+	plt.plot(x, y2, marker = "o", linestyle='None')
+	plt.grid(True)
+	
+	plt.tight_layout()
 	
 if(savefig):
 	plt.savefig('plot.png')

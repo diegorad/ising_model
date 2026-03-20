@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 	//Default parameter values
 	Config cfg = {
 		    .out_mode = OUT_PLOT,
+		    .init_mode = RAND, //Spin initialization
 		    .D_i = {0.0, 0.0},	//57.88 μeV
 		    .J_ij = {1.0, 3.0, -2.0},	//57.88 μeV
 		    .seed = 0,
@@ -60,8 +61,10 @@ int main(int argc, char *argv[])
 	//Initialize spins
 	for(i=0;i<N;i++){
 		int random_index = rand() % (nodes[i].spin_value + 1);
-		nodes[i].spin = nodes[i].spin_z[random_index]; //Random distribution 
-/*		nodes[i].spin = nodes[i].spin_value; //All up*/
+		if(cfg.init_mode == 0)
+			nodes[i].spin = nodes[i].spin_z[random_index]; //Random 
+		else
+			nodes[i].spin = nodes[i].spin_value; //All up
 	}
 	
 	//Load field routine

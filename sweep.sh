@@ -5,8 +5,8 @@ calc() {
 }
 
 nc=8 	#Parallel threads
-min=0.1
-max=20
+min=10
+max=100
 nSteps=96 	#Must be divisible by nc
 
 range="$(calc $max - $min)"
@@ -14,12 +14,13 @@ batch=$(($nSteps/$nc))
 
 numStep="$(calc $range/$(($nSteps-1)))"
 
-external_val=$1
+#external_val=$1
 
 rm -r plot_serie 2> /dev/null
 rm -r output_serie 2> /dev/null
 rm -r data_* 2> /dev/null
 rm -f susceptibility.txt
+rm -f avg_mag.txt
 mkdir plot_serie 2> /dev/null
 mkdir output_serie 2> /dev/null
 
@@ -35,5 +36,5 @@ echo -ne $i"/"$batch"\r"
 	wait
 done
 
-sort -n output_D.txt > output_D.txt.tmp
-mv output_D.txt.tmp output_D.txt
+#sort -n output_D.txt > output_D.txt.tmp
+#mv output_D.txt.tmp output_D.txt

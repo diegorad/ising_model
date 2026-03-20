@@ -7,6 +7,7 @@
 
 static struct option long_options[] = {
     {"out", required_argument, 0, 'o'},
+    {"init", required_argument, 0, 'i'},
     {"D_i",   required_argument, 0, 'D'},
     {"J_ij",   required_argument, 0, 'J'},
     {"seed", required_argument, 0, 's'},
@@ -20,7 +21,7 @@ int parse_args(int argc, char **argv, Config *cfg)
     int opt;
     int option_index = 0;
 
-    while ((opt = getopt_long(argc, argv, "o:D:J:s:T:h",
+    while ((opt = getopt_long(argc, argv, "o:i:D:J:s:T:h",
                               long_options, &option_index)) != -1)
     {
         switch (opt) {
@@ -34,6 +35,17 @@ int parse_args(int argc, char **argv, Config *cfg)
                 cfg->out_mode = OUT_PLOT;
             else {
                 fprintf(stderr, "Invalid --out value: %s\n", optarg);
+                return EXIT_FAILURE;
+            }
+            break;
+        
+        case 'i':
+            if (strcmp(optarg, "random") == 0)
+                cfg->init_mode = RAND;
+            else if (strcmp(optarg, "sat") == 0)
+                cfg->init_mode = SAT;
+            else {
+                fprintf(stderr, "Invalid --init value: %s\n", optarg);
                 return EXIT_FAILURE;
             }
             break;
@@ -63,6 +75,7 @@ int parse_args(int argc, char **argv, Config *cfg)
         case 'h':
             printf("Usage: %s [options]\n", argv[0]);
             printf("  --out=monitor|output|plot\n");
+            printf("  --init=random|sat\n");
             printf("  --D_i={0.0, 0.0}\n");
             printf("  --J_ij={0.0, 0.0, 0.0}\n");
             printf("  --seed=1\n");
