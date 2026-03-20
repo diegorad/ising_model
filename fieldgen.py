@@ -30,7 +30,7 @@ if field_range != None and field_rate != None:
 	steps = int(field_range/field_rate)
 
 #Loop
-ramp(routine, 0, field_range, 6, 6, steps)
+ramp(routine, field_range, field_range, 6, 6, steps)
 ramp(routine, field_range, -field_range, 6, 6, steps*2)
 ramp(routine, -field_range, field_range, 6, 6, steps*2)
 

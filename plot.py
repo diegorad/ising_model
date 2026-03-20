@@ -17,7 +17,8 @@ label = None
 timePlot = False
 total_magnetization = False
 susceptibility = False
-trim = 0
+trim = False
+trim_amount = None
 
 while sys.argv:
 	if sys.argv[0] == "--savefig":
@@ -32,8 +33,11 @@ while sys.argv:
 	if sys.argv[0] == "--susceptibility":
 		susceptibility = True
 	if sys.argv[0] == "--trim":
-		trim = int(sys.argv[1])
-		sys.argv = sys.argv[1:]
+		trim = True
+		if len(sys.argv) > 1:
+		    if "--" not in sys.argv[1]:
+			    trim_amount = int(sys.argv[1])
+			    sys.argv = sys.argv[1:]
 		
 	sys.argv = sys.argv[1:]
 	
@@ -47,9 +51,17 @@ if(susceptibility == False):
 		        col2.append(b)
 		        col3.append(c)
 	
-	col1 = col1[trim:]
-	col2 = np.array(col2[trim:])
-	col3 = np.array(col3[trim:])
+	#Trim
+	if trim:
+	    if trim_amount == None:
+	        #Delete 1/5 of the data: Initial branch
+	        trim_amount = int(len(col1)/5)
+	else:
+	    trim_amount = 0
+	
+	col1 = col1[trim_amount:]
+	col2 = np.array(col2[trim_amount:])
+	col3 = np.array(col3[trim_amount:])
 	
 	# Compute global Y limits across columns 2 and 3
 	y_min = min(min(col2), min(col3))

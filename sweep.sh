@@ -7,12 +7,14 @@ calc() {
 nc=8 	#Parallel threads
 min=0.1
 max=20
-nSteps=96	#Must be divisible by nc
+nSteps=96 	#Must be divisible by nc
 
 range="$(calc $max - $min)"
 batch=$(($nSteps/$nc))
 
 numStep="$(calc $range/$(($nSteps-1)))"
+
+external_val=$1
 
 rm -r plot_serie 2> /dev/null
 rm -r output_serie 2> /dev/null

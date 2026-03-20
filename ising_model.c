@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
 	int **neighbors;
 	Node *nodes;
 	int N;
+	int neighbors_lenght;
 	int numberOfIterations;
 	double **routine;
 	double B = 0;	// [B]=[57.88 μeV] so that B=1 ~ 1 Tesla (57.88 μeV/mu_B)
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
 	nodes = loadNodes("nodes.dat", &N);
 	
 	//Load neighbors
-	neighbors = loadIntegerList("neighbors.dat", N, 4);
+	neighbors = loadIntegerList("neighbors.dat", &N, &neighbors_lenght);
 	
 	//Initialize spins
 	for(i=0;i<N;i++){
@@ -89,7 +90,7 @@ int main(int argc, char *argv[])
 		}
 		
 		//Total energy
-		total_energy = total_E(N, neighbors, nodes, B, cfg.D_i, cfg.J_ij);
+		total_energy = total_E(N, neighbors, neighbors_lenght, nodes, B, cfg.D_i, cfg.J_ij);
 		
 		//OUTPUT
 		if(cfg.out_mode == 1)
@@ -100,8 +101,8 @@ int main(int argc, char *argv[])
 		for(i=0;i<N;i++){
 			int newSpin = -999;
 			j = rand()%N;
-			energy = E(j, false, &newSpin, neighbors, nodes, B, cfg.D_i, cfg.J_ij);
-			energy_flip = E(j, true, &newSpin, neighbors, nodes, B, cfg.D_i, cfg.J_ij);
+			energy = E(j, false, &newSpin, neighbors, neighbors_lenght, nodes, B, cfg.D_i, cfg.J_ij);
+			energy_flip = E(j, true, &newSpin, neighbors, neighbors_lenght, nodes, B, cfg.D_i, cfg.J_ij);
 			delta_energy = energy_flip - energy;
 			
 			event = randDouble(0, 1) <= boltzmann(delta_energy, k_B, T);

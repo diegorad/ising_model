@@ -1,6 +1,6 @@
 #include "utils.h"
 
-double  E(int i, bool flip, int *newSpin, int **neighbors, Node *nodes, double h, double *D_i, double *J_ij){
+double  E(int i, bool flip, int *newSpin, int **neighbors, int neighbors_lenght, Node *nodes, double h, double *D_i, double *J_ij){
 	int j, spin;
 	int len = nodes[i].spin_value + 1;
 	double sum = 0;
@@ -22,7 +22,7 @@ double  E(int i, bool flip, int *newSpin, int **neighbors, Node *nodes, double h
 	D = D_i[nodes[i].type];
 
 	//Sum of neighboring spins
-	for(j=0;j<4;j++){
+	for(j=0;j<neighbors_lenght;j++){
 		//Skip when there's no neighbor
 		if(neighbors[i][j] == -1){
 			continue;
@@ -58,12 +58,12 @@ int sumSpins(int N, Node *nodes, int type)
 	return sum;
 }
 
-double total_E(int N, int **neighbors, Node *nodes, double B, double *D_i, double *J_ij){
+double total_E(int N, int **neighbors, int neighbors_lenght, Node *nodes, double B, double *D_i, double *J_ij){
 	double energy = 0;
 	int newSpin;
 	
 	for(int i=0;i<N;i++){
-		energy += E(i, false, &newSpin, neighbors, nodes, B, D_i, J_ij);
+		energy += E(i, false, &newSpin, neighbors, neighbors_lenght, nodes, B, D_i, J_ij);
 	}
 	
 	return energy;

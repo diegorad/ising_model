@@ -41,9 +41,10 @@ while sys.argv:
 		sys.argv = sys.argv[2:]
 	if sys.argv[0] == "--trim":
 		trim = True
-		if "--" not in sys.argv[1]:
-			trim_amount = int(sys.argv[1])
-			sys.argv = sys.argv[1:]
+		if len(sys.argv) > 1:
+		    if "--" not in sys.argv[1]:
+			    trim_amount = int(sys.argv[1])
+			    sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--column":
 		column = int(sys.argv[1])
 		sys.argv = sys.argv[1:]

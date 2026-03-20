@@ -22,7 +22,7 @@ int **createIntVectorList(int n, int m);
 double **createVectorList(int n, int m);
 Node* loadNodes(const char* filename, int *N);
 double **loadFloatList(char *fileName, int *sizeOfArray);
-int **loadIntegerList(char *fileName, int sizeOfArray, int dim);
+int **loadIntegerList(char *fileName, int *n, int *m);
 double randDouble(double min, double max);
 void exportList(int sizeOfArray, int dim, double **array, char *fileName);
 void print_node(const Node* n);

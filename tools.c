@@ -131,7 +131,7 @@ double **loadFloatList(char *fileName, int *sizeOfArray)
 	return list;
 }
 
-int **loadIntegerList(char *fileName, int sizeOfArray, int dim)
+int **loadIntegerList(char *fileName, int *n, int *m)
 {
 	int i,j;
 	int **edgelist;
@@ -143,13 +143,13 @@ int **loadIntegerList(char *fileName, int sizeOfArray, int dim)
 		exit(1);
 	}
 	
-/*	if(fscanf(input,"%d",&*sizeOfArray) != 1)*/
-/*		printf("Error in %s, line 1: Number of entries on file is not specified.\n", fileName);*/
+	if(fscanf(input,"%d %d", &*n, &*m) != 2)
+		printf("Error in %s, line 1: Number of entries on file is not specified.\n", fileName);
 		
-	edgelist=createIntVectorList(sizeOfArray, dim);
+	edgelist=createIntVectorList(*n, *m);
 
-	for(i=0;i<sizeOfArray;i++)
-		for(j=0;j<dim;j++)
+	for(i=0;i<*n;i++)
+		for(j=0;j<*m;j++)
 			if(fscanf(input,"%d",&edgelist[i][j]) !=1)
 				printf("Error in loadIntegerList function.\n");
 
