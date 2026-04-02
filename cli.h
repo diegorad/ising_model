@@ -21,6 +21,7 @@ typedef struct {
     double J_ij[3];
     int seed;
     double T;
+    double xrate;
 } Config;
 
 int parse_args(int argc, char **argv, Config *cfg);

@@ -27,14 +27,14 @@ val2="$(calc $2*0.5 - 1.2)"
 int_val="$(int $val)"
 	
 #	./fieldgen.py --range 0 --steps $int_val >/dev/null
-	./netgen.py --S_0 7 --ratio 0 --size 70 >/dev/null
+#	./netgen.py --S_0 7 --ratio 0 --size 70 >/dev/null
 #	./netgen.py --S_0 1 --S_1 4 --size 23 --type 'shell' --replacement 0.24 --layers 6 | grep 'Ratio =' | cut -d'=' -f2 | xargs >> ../out.txt
 #	python3 growNet.py --size 500 --S_0 1 --S_1 4 --ratio 0.34 --replacement 0.2 >/dev/null
     
-	./ising_model --J_ij="{0.255, 2.625, -1.55}" --D_i="{-0.55, 0}" --T 6 --init sat --out=output --seed=$1 > output.txt
-	echo "$val $(python3 average.py -s --trim --T 6 --size 70)" >> ../susceptibility.txt
-#	python3 plot.py --total --savefig --label "Ratio=$val"
-#	cp plot.png ../plot_serie/plot_$1.png
+	./ising_model --J_ij="{0.255, 2.625, -1.55}" --D_i="{-0.55, 0}" --xrate 0 --T 4.5 --init sat --out=output --seed=$1 > output.txt
+#	echo "$val $(python3 average.py -s --trim --T 6 --size 50)" >> ../susceptibility.txt
+	python3 plot.py --savefig --label "xrate=$val"
+	cp plot.png ../plot_serie/plot_$1.png
 	cp output.txt ../output_serie/out_$1.txt
 
 cd ../

@@ -5,9 +5,9 @@ calc() {
 }
 
 nc=8 	#Parallel threads
-min=10
-max=100
-nSteps=96 	#Must be divisible by nc
+min=0
+max=0.04
+nSteps=24 	#Must be divisible by nc
 
 range="$(calc $max - $min)"
 batch=$(($nSteps/$nc))

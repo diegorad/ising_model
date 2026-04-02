@@ -24,7 +24,8 @@ int main(int argc, char *argv[])
 		    .D_i = {0.0, 0.0},	//57.88 μeV
 		    .J_ij = {1.0, 3.0, -2.0},	//57.88 μeV
 		    .seed = 0,
-		    .T = -1	//T=-1 flags no T overwriting from --T argument
+		    .T = -1,	//T=-1 flags no T overwriting from --T argument
+		    .xrate = 0.01
 	};
     
 	int rc = parse_args(argc, argv, &cfg);
@@ -44,7 +45,7 @@ int main(int argc, char *argv[])
 	double T = 0; //T=1 ~ 0.672 K, T_real = T*(57.88 μeV/k_B_real)
 	int i,j;
 	double energy, energy_flip, delta_energy, total_energy;
-	bool event;
+	bool event, event_x;
 	FILE *f;
 
 	srand(time(NULL)+cfg.seed);
@@ -109,6 +110,7 @@ int main(int argc, char *argv[])
 			delta_energy = energy_flip - energy;
 			
 			event = randDouble(0, 1) <= boltzmann(delta_energy, k_B, T);
+			event_x = randDouble(0, 1) <= cfg.xrate;
 			
 			if(delta_energy <= 0 || event){
 				if(newSpin == -999){
@@ -116,6 +118,16 @@ int main(int argc, char *argv[])
 					exit(1);
 				}
 				nodes[j].spin = newSpin;
+			}
+			
+			if(iter > 1000){
+				if(event_x){
+					if(newSpin == -999){
+						printf("Error while spin flipping. \n");
+						exit(1);
+					}
+					nodes[j].spin = newSpin;
+				}
 			}
 		}		
 		
