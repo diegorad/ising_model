@@ -19,10 +19,10 @@ int main(int argc, char *argv[])
 {	
 	//Default parameter values
 	Config cfg = {
-		    .out_mode = OUT_PLOT,
+		    .out_mode = OUT_MONITOR,
 		    .init_mode = RAND, //Spin initialization
-		    .D_i = {0.0, 0.0},	//57.88 μeV
-		    .J_ij = {1.0, 3.0, -2.0},	//57.88 μeV
+		    .D_i = {-0.5, 0.0},	//57.88 μeV
+		    .J_ij = {0.2, 2.7, -1.5},	//57.88 μeV
 		    .seed = 0,
 		    .T = -1	//T=-1 flags no T overwriting from --T argument
 	};
