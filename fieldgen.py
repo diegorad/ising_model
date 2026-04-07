@@ -14,6 +14,7 @@ def ramp(routine, start_h, stop_h, start_T, stop_T, iterations):
 field_rate = None
 field_range = None
 steps = None
+mode = "loop"
 
 while sys.argv:
 	if sys.argv[0] == "--rate":
@@ -25,6 +26,9 @@ while sys.argv:
 	if sys.argv[0] == "--range":
 		field_range = float(sys.argv[1])
 		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--mode":
+		mode = sys.argv[1]
+		sys.argv = sys.argv[1:]
 
 	sys.argv = sys.argv[1:]
 
@@ -33,15 +37,20 @@ routine = []
 if field_range != None and field_rate != None:
 	steps = int(field_range/field_rate)
 
-##Loop
-#ramp(routine, field_range, field_range, 6, 6, steps)
-#ramp(routine, field_range, -field_range, 6, 6, steps*2)
-#ramp(routine, -field_range, field_range, 6, 6, steps*2)
-
-#Constant
-ramp(routine, field_range, field_range, 6, 6, steps)
-
-#Custom
+if(mode == "loop"):
+	if field_range == None or steps == None:
+		print("Error: --range and --steps or --rate must be defined.")
+		exit()
+	else:
+		ramp(routine, field_range, field_range, 6, 6, steps)
+		ramp(routine, field_range, -field_range, 6, 6, steps*2)
+		ramp(routine, -field_range, field_range, 6, 6, steps*2)
+elif(mode == "const"):	
+	if field_range == None or steps == None:
+		print("Error: --range and --steps must be defined.")
+		exit()
+	else:
+		ramp(routine, field_range, field_range, 6, 6, steps)
 
 #Export
 if field_range != None and field_rate != None:

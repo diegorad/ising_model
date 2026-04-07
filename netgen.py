@@ -9,7 +9,7 @@ from tools import *
 
 ###################
 size = 50
-ratio = 0.1
+ratio = 0.5
 periodic = False
 show = False
 layers = 5
@@ -164,8 +164,8 @@ print(f"Percentage elements: {{0: {round(real_N[0]/N, 3)}, 1: {round(real_N[1]/N
 print(f"Ratio: {round(real_N[0]/(real_N[0]+real_N[1]),2)}")
 print(f"Periodic: {periodic}\n")
 
-#Export net.dat
-print("Exporting node data to net.dat")
+#Export nodes.dat
+print("Exporting node data to nodes.dat")
 nodeList = [(item[0], item[1]['type'], item[1]['spin']) for item in G.nodes(data=True)]
 with open("nodes.dat", "w") as f:
     f.write(''.join(str(len(G.nodes()))+ '\n'))

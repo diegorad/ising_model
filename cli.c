@@ -79,14 +79,13 @@ int parse_args(int argc, char **argv, Config *cfg)
 
         case 'h':
             printf("Usage: %s [options]\n", argv[0]);
-            printf("  --out=monitor|output|plot\n");
-            printf("  --init=random|sat\n");
-            printf("  --D_i={0.0, 0.0}\n");
-            printf("  --J_ij={0.0, 0.0, 0.0}\n");
-            printf("  --seed=1\n");
-            printf("  --T=6/n");
+            printf("  --out=monitor|output|plot \t (default: monitor)\n");
+            printf("  --init=random|sat \t (default: random)\n");
+            printf("  --D_i=\"{0.0, 0.0} \t (default: \"{-0.5, 0}\")\"\n");
+            printf("  --J_ij=\"{0.0, 0.0, 0.0}\" \t (default: \"{0.2, 2.7, -1.5}\")\n");
+            printf("  --seed=0 \t (default: 0)\n");
+            printf("  --T=6 \t (default: 6)\n");
             printf("  --xrate=0.01/n");
-            
             exit(EXIT_SUCCESS);
 
         default:
