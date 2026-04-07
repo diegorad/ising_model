@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 		    .J_ij = {1.0, 3.0, -2.0},	//57.88 μeV
 		    .seed = 0,
 		    .T = -1,	//T=-1 flags no T overwriting from --T argument
-		    .xrate = 0.01
+		    .xrate = 0
 	};
     
 	int rc = parse_args(argc, argv, &cfg);
@@ -120,14 +120,12 @@ int main(int argc, char *argv[])
 				nodes[j].spin = newSpin;
 			}
 			
-			if(iter > 1000){
-				if(event_x){
-					if(newSpin == -999){
-						printf("Error while spin flipping. \n");
-						exit(1);
-					}
-					nodes[j].spin = newSpin;
+			if(event_x){
+				if(newSpin == -999){
+					printf("Error while spin flipping. \n");
+					exit(1);
 				}
+				nodes[j].spin = newSpin;
 			}
 		}		
 		
