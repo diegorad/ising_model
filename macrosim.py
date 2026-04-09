@@ -130,10 +130,10 @@ class ControlPanel(QWidget):
         J_ij = self.j_ij
         r = self.ratio
 
-        self.run_line("./fieldgen.py --rate 0.01 --range 6")        
-        self.run_line(f"python3 netgen.py --ratio 0 --size 50 --S_0 1 --S_1 2")
+#        self.run_line("./fieldgen.py --rate 0.01 --range 6")        
+#        self.run_line(f"python3 netgen.py --ratio 0 --size 50 --S_0 1 --S_1 2")
         self.run_line(f'./ising_model --J_ij={{{J_0},{x},{J_ij}}} --D_i={{0,{y}}} --out=monitor')
-        self.run_line("./fig_plot.py --trim --column 2 --xRange -6 6")
+        self.run_line("./fig_plot.py --trim --column 2 --xRange -2.5 2.5 --show")
 #        
 #        self.run_line(f"python3 netgen.py --ratio 1 --size 50 --S_0 1 --S_1 2")
 #        self.run_line(f'./ising_model --J_ij={{3.4,{x},{z}}} --D_i={{0,{y}}} --out=monitor')

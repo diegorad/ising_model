@@ -183,6 +183,7 @@ if(plot_mode == "susceptibility"):
 	plt.subplot(1, 2, 1)
 #	plt.xlabel("N")
 	plt.ylabel("<M>")
+	plt.ylim([-0.2, 1.1])
 	plt.plot(x, y1, marker = "o", linestyle='None')
 	plt.grid(True)
 	
