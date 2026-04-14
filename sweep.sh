@@ -50,17 +50,8 @@ function spawn_process() {
     done
 }
 
-#spawn_process ./sweep_rutine.sh 0 6
-#spawn_process ./sweep_rutine.sh 1 5
-#spawn_process ./sweep_rutine.sh 2 4
-#spawn_process ./sweep_rutine.sh 3 3
-#spawn_process ./sweep_rutine.sh 4 6
-#spawn_process ./sweep_rutine.sh 5 5
-#spawn_process ./sweep_rutine.sh 6 4
-#spawn_process ./sweep_rutine.sh 7 3
-
 while read F  ; do
-        echo $F
+        echo "$counter: $F"
         counter=$(($counter+1))
         spawn_process ./sweep_rutine.sh $counter $F
 done <./batch_values.dat

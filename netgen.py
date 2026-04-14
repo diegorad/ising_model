@@ -62,6 +62,9 @@ for i in [0, 1]:
         S_z[i].append(-S[i] + 2*j)
 
 H = nx.grid_2d_graph(size, size, periodic=periodic)
+if(network_type == 'hex'):
+	H = nx.hexagonal_lattice_graph(size, size, periodic=periodic)
+	print(len(H.nodes()))
 
 #Coordinates
 pos = {node: {'pos': node} for node in H.nodes()}  # (x, y) positions
@@ -73,7 +76,7 @@ G = nx.relabel_nodes(H, mapping)
 
 N = len(G.nodes())
 
-if(network_type == 'random' or network_type == 'snn'):
+if(network_type == 'random' or network_type == 'snn' or 'hex'):
     neighbors_lenght = 4
     
     #Assing type to nodes according to ratio

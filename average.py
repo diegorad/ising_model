@@ -86,6 +86,6 @@ if(mode == "susceptibility" and T != None and size != None):
 	M0 = data[trim_amount:, 1]
 	M1 = data[trim_amount:, 2]
 	
-	M = [(x + y)/pow(size,2) for x, y in zip(M0, M1)]
+	M = [(x + y)/(2*pow(size,2)) for x, y in zip(M0, M1)]
 	
 	print(np.mean(M), pow(size,2)/T * np.var(M))

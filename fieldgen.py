@@ -42,7 +42,7 @@ if(mode == "loop"):
 		print("Error: --range and --steps or --rate must be defined.")
 		exit()
 	else:
-		ramp(routine, field_range, field_range, 6, 6, steps)
+		ramp(routine, 0, field_range, 6, 6, steps)
 		ramp(routine, field_range, -field_range, 6, 6, steps*2)
 		ramp(routine, -field_range, field_range, 6, 6, steps*2)
 elif(mode == "const"):	

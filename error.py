@@ -98,7 +98,7 @@ for i in range(2):
     #Sim data interpolation to experimental
     simData_interp = np.interp(x, x_sim, y_sim_smooth)
 
-    error.append(np.square(np.subtract(y_smooth,simData_interp)).mean())
+    error.append(np.abs(np.subtract(y_smooth,simData_interp)).mean())
 
 #    plt.plot(x, y)
     plt.plot(x, y, color="tab:blue", label='Data')
