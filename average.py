@@ -12,18 +12,31 @@ T = None
 size = None
 trim = False
 trim_amount = None
+bin_size = 0.1
+file_name = "output.txt"
 
 mode = "files"
 
 while sys.argv:
+	if sys.argv[0] == "--mode":
+		mode = sys.argv[1]
+		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--files":
 		mode = "files"
+	if sys.argv[0] == "--file":
+		file_name = sys.argv[1]
+		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--time":
 		mode = "time"
 	if sys.argv[0] == "--susceptibility" or sys.argv[0] == "-s":
 		mode = "susceptibility"
+	if sys.argv[0] == "--stepped":
+		mode = "stepped_loop"
 	if sys.argv[0] == "--T":
 		T = float(sys.argv[1])
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--bin_size":
+		bin_size = float(sys.argv[1])
 		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--size":
 		size = float(sys.argv[1])
@@ -86,6 +99,75 @@ if(mode == "susceptibility" and T != None and size != None):
 	M0 = data[trim_amount:, 1]
 	M1 = data[trim_amount:, 2]
 	
-	M = [(x + y)/(2*pow(size,2)) for x, y in zip(M0, M1)]
+	M = [(x + y)/pow(size,2) for x, y in zip(M0, M1)]
 	
 	print(np.mean(M), pow(size,2)/T * np.var(M))
+
+if(mode == "bin"):
+	data = np.loadtxt(file_name)
+	
+	#Trim
+	if trim:
+	    if trim_amount == None:
+	        #Delete 1/5 of the data: Initial branch
+	        trim_amount = int(len(data)/5)
+	else:
+	    trim_amount = 0
+	
+	previous_field = None
+	current_field = None
+		
+	array = []
+	for entry in data:
+		current_field = entry[0]
+		
+		if(previous_field != None):
+			if(abs(current_field - previous_field)<bin_size):
+				array.append(entry)
+			else:
+				if(len(array)<=1):
+					print(*entry)
+				else:
+					array = np.array(array)
+					array_avg = np.mean(array, axis=0)
+					print(*array_avg)
+				
+				previous_field = current_field
+				array = []
+		else:
+			previous_field = current_field
+
+if(mode == "stepped_loop"):
+	data = np.loadtxt("output.txt")
+	
+	#Trim
+	if trim:
+	    if trim_amount == None:
+	        #Delete 1/5 of the data: Initial branch
+	        trim_amount = int(len(data)/5)
+	else:
+	    trim_amount = 0
+	
+	previous_field = None
+	current_field = None
+		
+	array = []
+	for entry in data:
+		current_field = entry[0]
+		
+		if(previous_field != None):
+			if(current_field == previous_field):
+				array.append([entry[1], entry[2]])
+			else:
+				array = np.array(array)
+				trim_amount = int(len(array)/5)
+				M0 = array[trim_amount:, 0]
+				M1 = array[trim_amount:, 1]
+				
+				M = [np.mean(M0), np.mean(M1)]
+				
+				print(previous_field, np.mean(M0), np.mean(M1))
+				array = []
+#				exit()
+		
+		previous_field = current_field
