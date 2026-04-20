@@ -2,8 +2,12 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import addcopyfighandler
 import sys
+
+try:
+    import addcopyfighandler
+except ImportError:
+    pass
 
 # Load data
 col1 = []
@@ -88,9 +92,11 @@ if(plot_mode == "loop" or plot_mode == "time" or plot_mode == "total_magnetizati
 	plt.figure(figsize=(10, 4))
 	plt.suptitle(label)
 
+	markers = 'None' if len(col1) > 100 else 'o'
+
 	# Plot 1: Column 1 vs Column 2
 	plt.subplot(1, 2, 1)
-	plt.plot(col1, col2)
+	plt.plot(col1, col2, marker = markers)
 	plt.xlabel("Column 1")
 	plt.ylabel("Column 2")
 	plt.title("Column 1 vs Column 2")
@@ -99,7 +105,7 @@ if(plot_mode == "loop" or plot_mode == "time" or plot_mode == "total_magnetizati
 
 	# Plot 2: Column 1 vs Column 3
 	plt.subplot(1, 2, 2)
-	plt.plot(col1, col3)
+	plt.plot(col1, col3, marker = markers)
 	plt.xlabel("Column 1")
 	plt.ylabel("Column 3")
 	plt.title("Column 1 vs Column 3")
@@ -183,8 +189,8 @@ if(plot_mode == "susceptibility"):
 	plt.subplot(1, 2, 1)
 #	plt.xlabel("N")
 	plt.ylabel("<M>")
-	plt.ylim([-0.2, 1.1])
-	plt.plot(x, y1, marker = "o", linestyle='None')
+#	plt.ylim([-, 1.1])
+	plt.plot(x, y1, marker = "o", linestyle='-')
 	plt.grid(True)
 	
 	plt.subplot(1, 2, 2)

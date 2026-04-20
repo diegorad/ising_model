@@ -6,21 +6,37 @@ import sys
 
 #PARAMETERS-------------
 
-batch_type = None
+mode = 'range'
+steps = None
+step = 1
 start = None
 stop = None
-
+reverse = False
 #------------------------
 
 #Argument parsing
 while sys.argv:
-    if sys.argv[0] == "--type":
-        batch_type = sys.argv[1]
+    if sys.argv[0] == "--mode":
+        mode = sys.argv[1]
+        sys.argv = sys.argv[1:]
+    if sys.argv[0] == "--reverse":
+        reverse = True
+    if sys.argv[0] == "--steps":
+        steps = int(sys.argv[1])
+        sys.argv = sys.argv[1:]
+    if sys.argv[0] == "--step":
+        step = int(sys.argv[1])
+        sys.argv = sys.argv[1:]
+    if sys.argv[0] == "--start":
+        start = float(sys.argv[1])
+        sys.argv = sys.argv[1:]
+    if sys.argv[0] == "--stop":
+        stop = float(sys.argv[1])
         sys.argv = sys.argv[1:]
         
     sys.argv = sys.argv[1:]
 
-if(batch_type == 'normal'):
+if(mode == 'normal'):
 	mu, sigma = 25, 1000
 	s = np.random.normal(mu, sigma, 500)
 
@@ -36,9 +52,23 @@ if(batch_type == 'normal'):
 
 	s = np.sort(s)
 
-if(batch_type == 'lin'):
-	s = [i for i in range(1, 100, 1)]
+if(mode == 'int_range'):
+	s = [i for i in range(int(start), int(stop+step), step)]
+	if(reverse):
+		s.reverse()
 	print(s)
+	
+if(mode == 'range'):
+	s = np.linspace(start, stop, steps)
+	if(reverse):
+		s.reverse()
+	print(s)
+
+if mode == 'log_range':
+    s = np.logspace(np.log10(start), np.log10(stop), steps)
+    if reverse:
+        s = s[::-1]
+    print(s)
 
 #Export
 with open("batch_values.dat", "w") as f:

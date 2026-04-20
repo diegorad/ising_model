@@ -48,7 +48,7 @@ while sys.argv:
 	if sys.argv[0] == "--column":
 		column = int(sys.argv[1])
 		sys.argv = sys.argv[1:]
-	if sys.argv[0] == "--name":
+	if sys.argv[0] == "--save":
 		file_name = sys.argv[1]
 		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--normalize":
