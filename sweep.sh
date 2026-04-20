@@ -1,59 +1,69 @@
 #! /bin/bash
 
+MAX_WORKERS=2
+running_pids=""
+counter=0
+
 calc() {
     echo "$*" | bc -l
 }
 
-nc=8 	#Parallel threads
-min=4
-max=8
-nSteps=96 	#Must be divisible by nc
-
-range="$(calc $max - $min)"
-batch=$(($nSteps/$nc))
-
-numStep="$(calc $range/$(($nSteps-1)))"
-
 #external_val=$1
 
-rm -r plot_serie 2> /dev/null
-rm -r output_serie 2> /dev/null
-rm -r data_* 2> /dev/null
+spin='-\|/'
+
+gcc -o ising_model ising_model.c tools.c utils.c cli.c -lm
+
+rm -rf plot_serie
+rm -rf output_serie
+rm -rf data_serie
+rm -rf run
 rm -f susceptibility.txt
 rm -f avg_mag.txt
-mkdir plot_serie 2> /dev/null
-mkdir output_serie 2> /dev/null
+mkdir -p ./run/plot_serie
+mkdir ./run/output_serie
+mkdir ./run/output_bin_serie
 
-#for i in $(seq 0 $(($batch-1)))
-#do
-#echo -ne $i"/"$batch"\r"
-#	for j in $(seq 0 $(($nc-1)))
-#	do
-#	 	step=$(($nc*$i+$j))
-#		val="$(calc $min+$step*$numStep)"
-#		./sweep_rutine.sh $step $val&
-#	done
-#	wait
-#done
-#
+function spinner() {
+    i=0
+    while :; do
+        any_running=false
 
-MAX_WORKERS=4
-running_pids=""
-counter=0
+        for p in "${pids[@]}"; do
+            if kill -0 "$p" 2>/dev/null; then
+                any_running=true
+                break
+            fi
+        done
+
+        $any_running || break
+
+        i=$(( (i+1) % 4 ))
+        printf "\r${spin:$i:1}"
+        sleep 0.1
+    done
+    printf "\r"
+}
 
 function spawn_process() {
     "$@" &
+    pid=$!
+    pids+=($pid)
     
-#    echo $(jobs -rp | wc -l)
     while [[ $(jobs -rp | wc -l) -ge $MAX_WORKERS ]]; do
+        spinner
         wait -n
     done
 }
 
 while read F  ; do
+		printf "\r"
         echo "$counter: $F"
         counter=$(($counter+1))
         spawn_process ./sweep_rutine.sh $counter $F
 done <./batch_values.dat
+
+#Spinner for last one
+spinner
 
 wait
