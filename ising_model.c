@@ -64,8 +64,10 @@ int main(int argc, char *argv[])
 		int random_index = rand() % (nodes[i].spin_value + 1);
 		if(cfg.init_mode == 0)
 			nodes[i].spin = nodes[i].spin_z[random_index]; //Random 
-		else
+		else if(cfg.init_mode == 1)
 			nodes[i].spin = nodes[i].spin_value; //All up
+		else if(cfg.init_mode == 2)
+			nodes[i].spin = -nodes[i].spin_value; //All down
 	}
 	
 	//Load field routine
@@ -110,7 +112,7 @@ int main(int argc, char *argv[])
 			delta_energy = energy_flip - energy;
 			
 			event = randDouble(0, 1) <= boltzmann(delta_energy, k_B, T);
-			event_x = randDouble(0, 1) <= cfg.xrate;
+//			event_x = randDouble(0, 1) <= cfg.xrate;
 			
 			if(delta_energy <= 0 || event){
 				if(newSpin == -999){
@@ -120,13 +122,13 @@ int main(int argc, char *argv[])
 				nodes[j].spin = newSpin;
 			}
 			
-			if(event_x){
-				if(newSpin == -999){
-					printf("Error while spin flipping. \n");
-					exit(1);
-				}
-				nodes[j].spin = newSpin;
-			}
+//			if(event_x){
+//				if(newSpin == -999){
+//					printf("Error while spin flipping. \n");
+//					exit(1);
+//				}
+//				nodes[j].spin = newSpin;
+//			}
 		}		
 		
 		//MONITOR

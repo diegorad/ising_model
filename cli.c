@@ -45,8 +45,10 @@ int parse_args(int argc, char **argv, Config *cfg)
                 cfg->init_mode = RAND;
             else if (strcmp(optarg, "sat") == 0)
                 cfg->init_mode = SAT;
+            else if (strcmp(optarg, "sat_neg") == 0)
+                cfg->init_mode = SAT_NEG;
             else {
-                fprintf(stderr, "Invalid --init value: %s\n", optarg);
+                fprintf(stderr, "Invalid --init value: %s\nUsage: --init=random|sat|sat_neg \t (default: random)\n", optarg);
                 return EXIT_FAILURE;
             }
             break;
@@ -80,7 +82,7 @@ int parse_args(int argc, char **argv, Config *cfg)
         case 'h':
             printf("Usage: %s [options]\n", argv[0]);
             printf("  --out=monitor|output|plot \t (default: monitor)\n");
-            printf("  --init=random|sat \t (default: random)\n");
+            printf("  --init=random|sat|sat_neg \t (default: random)\n");
             printf("  --D_i=\"{0.0, 0.0} \t (default: \"{-0.5, 0}\")\"\n");
             printf("  --J_ij=\"{0.0, 0.0, 0.0}\" \t (default: \"{0.2, 2.7, -1.5}\")\n");
             printf("  --seed=0 \t (default: 0)\n");

@@ -11,7 +11,8 @@ typedef enum {
 
 typedef enum {
     RAND,
-    SAT
+    SAT,
+    SAT_NEG
 } InitMode;
 
 typedef struct {
