@@ -8,21 +8,23 @@ calc() {
     echo "$*" | bc -l
 }
 
-#external_val=$1
+macro_index=$1
+printf -v macro_value "%0.5f" $2
 
+run_dir="./run/run_$macro_index"
 spin='-\|/'
 
 gcc -o ising_model ising_model.c tools.c utils.c cli.c -lm
 
-rm -rf plot_serie
-rm -rf output_serie
-rm -rf data_serie
-rm -rf run
-rm -f susceptibility.txt
-rm -f avg_mag.txt
-mkdir -p ./run/plot_serie
-mkdir ./run/output_serie
-mkdir ./run/output_bin_serie
+#rm -rf plot_serie
+#rm -rf output_serie
+#rm -rf data_serie
+rm -rf $run_dir
+#rm -f susceptibility.txt
+#rm -f avg_mag.txt
+mkdir -p $run_dir/plot_serie
+mkdir $run_dir/output_serie
+mkdir $run_dir/output_bin_serie
 
 function spinner() {
     i=0
@@ -56,11 +58,12 @@ function spawn_process() {
     done
 }
 
-while read F  ; do
+while read val  ; do
+		printf -v val "%0.5f" $val
 		printf "\r"
-        echo "$counter: $F"
+        echo "$counter: $val"
         counter=$(($counter+1))
-        spawn_process ./sweep_rutine.sh $counter $F
+        spawn_process ./sweep_rutine.sh $macro_index $counter $val $macro_value
 done <./batch_values.dat
 
 #Spinner for last one

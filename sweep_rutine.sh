@@ -11,48 +11,65 @@ int() {
 #external_val=$3
 #external_val=$( printf "%.0f" $3 )
 
-mkdir -p ./run/data_serie/data_$1
+macro_index=$1
+macro_value=$4
+run_dir="./run/run_$macro_index"
 
-cp *.py ./run/data_serie/data_$1
-cp tools.* ./run/data_serie/data_$1
-cp ising_model ./run/data_serie/data_$1
-cp *.dat ./run/data_serie/data_$1
+mkdir -p $run_dir/data_serie/data_$2
 
-cd ./run/data_serie/data_$1
+cp *.py $run_dir/data_serie/data_$2
+cp tools.* $run_dir/data_serie/data_$2
+cp ising_model $run_dir/data_serie/data_$2
+cp *.dat $run_dir/data_serie/data_$2
+cp -r ./data $run_dir/data_serie/data_$2
 
-printf -v val "%0.5f" $2
+cd $run_dir/data_serie/data_$2
 
-val1="$(calc 0.5 + 0*$2)"
-val2="$(calc $2*0.5 - 1.2)"
+printf -v val "%0.5f" $3
+printf -v macro_val "%0.5f" $macro_value
+
+aux_val="$(calc -0.177599 - 2.15532*$macro_val)"
+val2="$(calc $3*0.5 - 1.2)"
 int_val="$(int $val)"
+	
+#	#Optimize
+#	./optimize.py --column 1 --ext_val $val > ../../opt_result_$val.txt
+#	#Plot Error
+#	./error.py --column 1 --mode half_loop --trim 100 --savefig --label "$val"
+#	cp plot.png ../../plot_serie/plot_$val.png
 	
 #	./fieldgen.py --mode const --range $val --steps 5000 >/dev/null
 #	./netgen.py --S_0 7 --ratio 0 --size $int_val >/dev/null
 #	./netgen.py --S_0 1 --S_1 4 --size 23 --type 'shell' --replacement 0.24 --layers 6 | grep 'Ratio =' | cut -d'=' -f2 | xargs >> ../out.txt
 #	python3 growNet.py --size 500 --S_0 1 --S_1 4 --ratio 0.34 --replacement 0.2 >/dev/null
-    
-	./ising_model --J_ij="{0, 6, 0}" --D_i="{0, 0}" --out=output --T $val --init=sat --seed=$1 > output.txt
-	cp output.txt ../../output_serie/out_$1.txt
+	#Generate network
+	./netgen.py --S_0 4 --ratio $val --size 50 >/dev/null
+	
+	#Run sim
+	echo "Val:$val Macro_val:$macro_val Aux_val:$aux_val" > values.txt    
+	./ising_model --J_ij="{0.5, 4.6, $macro_val}" --D_i="{-1.255, 0}" --out=output --init=sat --seed=$2 > output.txt
+	cp output.txt ../../output_serie/out_$2.txt
 	
 	#Bin points
 	./average.py --mode bin --bin_size 0.01 > output.tmp
 	mv output.tmp output.txt
+	
+	#Plot
+	python3 plot.py --savefig --label "Jij=$val"
+	cp plot.png ../../plot_serie/plot_$2.png
+	
+	#Zero
+	echo "$3 $(./findZero.py --column 1) $(./findZero.py --column 2)" >> ../../zeros.txt
 	
 	#Susceptibility
 #	echo "$val $(./average.py -s --T $val --size 50 --trim)" >> ../../susceptibility.txt
 	
 #	echo "$val $(./average.py -s --T 6 --size 50 --trim)" >> ../../magcurve.txt
 		
-	#Plot
-	python3 plot.py --savefig --label "T=$val"
-	cp plot.png ../../plot_serie/plot_$1.png
 	
-	#Zero
-	echo "$2 $(./findZero.py)" >> ../../zeros.txt
-	
-#	cp output.txt ../../output_bin_serie/out_$1.txt
-#	echo "$2 $(python3 average.py -s --trim --T 6 --size 50)" >> ../../susceptibility.txt
+#	cp output.txt ../../output_bin_serie/out_$2.txt
+#	echo "$3 $(python3 average.py -s --trim --T 6 --size 50)" >> ../../susceptibility.txt
 
 
 cd ../
-#rm -r data_$1
+#rm -r data_$2
