@@ -4,7 +4,9 @@ import numpy as np
 import sys
 
 threshold = 10
+x_threshold = 0.1
 rounding = 4
+column = 1
 
 # Load data
 col1 = []
@@ -16,6 +18,9 @@ file_name_arg = None
 while sys.argv:
     if sys.argv[0] == "--file" or sys.argv[0] == "-f":
         file_name_arg = sys.argv[1]
+        sys.argv = sys.argv[1:]
+    if sys.argv[0] == "--column":
+        column = int(sys.argv[1])
         sys.argv = sys.argv[1:]
     
     sys.argv = sys.argv[1:]
@@ -33,13 +38,27 @@ with open(file_name, "r") as f:
             col1.append(a)
             col2.append(b)
             col3.append(c)
-            
-data = np.array([col1, col3]).T
+        
+data = [col1, col2, col3]
+    
+data = np.array([data[0], data[column]]).T
 
-near_zero = data[np.abs(data[:, 1]) <= threshold]
+x_lim=max(data[:, 0])
+
+mask = np.abs(data[:, 0]) <= x_threshold
+trim_data = data[mask]
+
+near_zero = trim_data[np.abs(trim_data[:, 1]) <= threshold]
 while(len(near_zero) < 4):
-	threshold = threshold + 1
-	near_zero = data[np.abs(data[:, 1]) <= threshold]
+	if x_threshold < x_lim:
+		x_threshold = x_threshold + 0.1
+	else:
+		x_threshold = 0.1
+		threshold = threshold + 1
+	
+	mask = np.abs(data[:, 0]) <= x_threshold
+	trim_data = data[mask]
+	near_zero = trim_data[np.abs(trim_data[:, 1]) <= threshold]
 	
 zero = sum(near_zero.T[0])/len(near_zero.T[0])
 
