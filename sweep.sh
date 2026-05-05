@@ -1,6 +1,6 @@
 #! /bin/bash
 
-MAX_WORKERS=2
+MAX_WORKERS=8
 running_pids=""
 counter=0
 

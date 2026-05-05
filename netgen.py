@@ -65,6 +65,10 @@ H = nx.grid_2d_graph(size, size, periodic=periodic)
 if(network_type == 'hex'):
 	H = nx.hexagonal_lattice_graph(size, size, periodic=periodic)
 	print(len(H.nodes()))
+#	H.remove_node((25,50))
+#	H.remove_node((0,0))
+#	H.remove_node((1,27))
+	print(H.nodes())
 
 #Coordinates
 pos = {node: {'pos': node} for node in H.nodes()}  # (x, y) positions

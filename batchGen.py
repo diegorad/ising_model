@@ -70,6 +70,24 @@ if mode == 'log_range':
         s = s[::-1]
     print(s)
 
+if(mode == 'function'):
+	def N(n):
+		result = 2500/n**2
+		
+		return result
+	
+	s = []
+	for i in range(int(start), int(stop+step), step):
+		print(i,int(N(i)))
+		subList = [i for _ in range(int(N(i)))]
+		s = s+subList
+		
+	if(reverse):
+		s.reverse()
+		
+#	print(f"Batch lenght: {len(s)}")
+#	print(s)
+	
 #Export
 with open("batch_values.dat", "w") as f:
     for val in s:

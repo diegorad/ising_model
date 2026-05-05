@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 		
 		//MONITOR
 		if(cfg.out_mode == 0 || cfg.out_mode == 2)
-			if (iter % 5 == 0){
+			if (iter % 2 == 0){
 				printf("Step: %d  B: %.3f  T: %.3f\r", iter, B, T);
 				if(cfg.out_mode == 2){
 					fflush(stdout);

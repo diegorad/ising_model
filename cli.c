@@ -34,6 +34,8 @@ int parse_args(int argc, char **argv, Config *cfg)
                 cfg->out_mode = OUT_OUTPUT;
             else if (strcmp(optarg, "plot") == 0)
                 cfg->out_mode = OUT_PLOT;
+            else if (strcmp(optarg, "none") == 0)
+                cfg->out_mode = OUT_NONE;
             else {
                 fprintf(stderr, "Invalid --out value: %s\n", optarg);
                 return EXIT_FAILURE;
@@ -81,7 +83,7 @@ int parse_args(int argc, char **argv, Config *cfg)
 
         case 'h':
             printf("Usage: %s [options]\n", argv[0]);
-            printf("  --out=monitor|output|plot \t (default: monitor)\n");
+            printf("  --out=monitor|output|plot|none \t (default: monitor)\n");
             printf("  --init=random|sat|sat_neg \t (default: random)\n");
             printf("  --D_i=\"{0.0, 0.0} \t (default: \"{-0.5, 0}\")\"\n");
             printf("  --J_ij=\"{0.0, 0.0, 0.0}\" \t (default: \"{0.2, 2.7, -1.5}\")\n");

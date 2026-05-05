@@ -6,7 +6,8 @@
 typedef enum {
     OUT_MONITOR,
     OUT_OUTPUT,
-    OUT_PLOT
+    OUT_PLOT,
+    OUT_NONE
 } OutputMode;
 
 typedef enum {

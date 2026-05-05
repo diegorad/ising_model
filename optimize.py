@@ -23,9 +23,9 @@ while sys.argv:
         
     sys.argv = sys.argv[1:]
 
-def run_line(line, capture_output=False):
+def run_line(line, capture_output=False, stdout=None):
         comm = line.split(" ")    
-        result = subprocess.run(comm, check=True, capture_output=capture_output)
+        result = subprocess.run(comm, check=True, capture_output=capture_output, stdout=stdout)
         return result
 
 def f(x):
@@ -49,27 +49,31 @@ def run_simulation(params):
     
     print(f"\nRunning simulation with x={[round(float(par),6) for par in params]}")
     
-    y = f(ext_val)
+#    y = f(ext_val)
     
 #    run_line(f"./fieldgen.py --steps {y} --range 6")
-    run_line(f'./ising_model --J_ij={{{ext_val},4.6,{x}}} --D_i={{{y},0.0}} --init=sat --out=none')
+    run_line(f'./ising_model --J_ij={{{x},4.6,-3}} --D_i={{{y},0.0}} --init=sat --out=none')
+    #Bin points
+    with open("output.tmp", "w") as file:
+    	run_line(f'./average.py --mode bin', stdout=file)
+    run_line(f'mv output.tmp output.txt')
 #    run_line(f'./sweep.sh {x} {y}')
 #    run_line(f'./average.py')
 
 def compute_error():
-	error_proc = "./error.py --column {i} --mode half_loop --trim 100 --norm tail 20 --save"	
+#    error_proc = "./error.py --column {i} --mode half_loop --norm tail 10 --save"	
 	
     error = []
     if column == None:
         for i in [1, 2]:
-            result = run_line(f"./error.py --column {i} --mode half_loop --trim 100 --norm tail 20 --save", capture_output = True)
+            result = run_line(f"./error.py --column {i} --mode half_loop --norm tail 10 --savefig", capture_output = True)
             error.append(float(result.stdout))
         
         print(f"Error = {{1: {error[0]},  2: {error[1]}}}")
         error = np.mean(error)
         print(f"Mean error = {error}")
     else:
-        result = run_line(f"./error.py --column {column} --mode half_loop --trim 100 --norm tail 20 --save", capture_output = True)
+        result = run_line(f"./error.py --dir data_Fe --mode half_loop --norm range --scale 0.1814 --savefig", capture_output = True)
         error = float(result.stdout)
         print(f"Error = {error}")    
     
@@ -85,8 +89,8 @@ def objective_scaled(params):
 	run_simulation(denormalized_params)
 	return compute_error()
 
-initial_guess = [-2]
-bnds = [(-4, 0)]
+initial_guess = [ext_val, -0.5]
+bnds = [(0, 1), (-2, 0)]
 tol = 1e-2
 
 normalized_guess = [transform(a, b) for a, b in zip(initial_guess, bnds)]

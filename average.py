@@ -5,7 +5,6 @@ import glob
 import sys
 
 #Defaults
-avg_files = True
 avg_time = False
 susceptibility = False
 T = None
@@ -14,6 +13,7 @@ trim = False
 trim_amount = None
 bin_size = 0.1
 file_name = "output.txt"
+file_dir = "./run/run_0/output_serie"
 
 mode = "files"
 
@@ -21,10 +21,11 @@ while sys.argv:
 	if sys.argv[0] == "--mode":
 		mode = sys.argv[1]
 		sys.argv = sys.argv[1:]
-	if sys.argv[0] == "--files":
-		mode = "files"
-	if sys.argv[0] == "--file":
+	if sys.argv[0] == "--file" or sys.argv[0] == "-f":
 		file_name = sys.argv[1]
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--dir":
+		file_dir = sys.argv[1]
 		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--time":
 		mode = "time"
@@ -52,7 +53,7 @@ while sys.argv:
 
 if(mode == "files"):
 	# Get all files in the folder
-	files = glob.glob("output_serie/*.txt")
+	files = glob.glob(f"{file_dir}/*.txt")
 
 	y1_all = []
 	y2_all = []
@@ -73,9 +74,9 @@ if(mode == "files"):
 
 	# Save result
 	avg_data = np.column_stack((x, y1_avg, y2_avg))
-	np.savetxt("output.txt", avg_data)
+	np.savetxt(f"{file_dir}/../averaged_output.txt", avg_data)
 
-	print("Done! Saved as output.txt")
+	print(f"Done! Saved in {file_dir}/../averaged_output.txt")
 
 if(mode == "time"):
 	data = np.loadtxt("output.txt")
@@ -86,7 +87,7 @@ if(mode == "time"):
 	print(mean_col2, mean_col3)
 	
 if(mode == "susceptibility" and T != None and size != None):
-	data = np.loadtxt("output.txt")
+	data = np.loadtxt(file_name)
 	
 	#Trim
 	if trim:
