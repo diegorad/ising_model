@@ -9,6 +9,7 @@ import sys
 
 column = None
 ext_val = None
+index = None
 
 #------------------------
 
@@ -20,6 +21,10 @@ while sys.argv:
     if sys.argv[0] == "--ext_val":
         ext_val = float(sys.argv[1])
         sys.argv = sys.argv[1:]
+    if sys.argv[0] == "--index":
+        index = int(sys.argv[1])
+        sys.argv = sys.argv[1:]
+        
         
     sys.argv = sys.argv[1:]
 
@@ -29,7 +34,7 @@ def run_line(line, capture_output=False, stdout=None):
         return result
 
 def f(x):
-    y = -0.177599-2.15532*x
+    y = -0.528198-2.1852*x
     return y
 
 def transform(initial_guess, bnds):
@@ -49,16 +54,18 @@ def run_simulation(params):
     
     print(f"\nRunning simulation with x={[round(float(par),6) for par in params]}")
     
-#    y = f(ext_val)
+#    aux_val = f(ext_val)
+#    print(ext_val, aux_val)
     
 #    run_line(f"./fieldgen.py --steps {y} --range 6")
-    run_line(f'./ising_model --J_ij={{{x},4.6,-3}} --D_i={{{y},0.0}} --init=sat --out=none')
+    run_line(f'./ising_model --J_ij={{{ext_val},4.6,0}} --D_i={{{x},0.0}} --init=sat --out=none')
     #Bin points
     with open("output.tmp", "w") as file:
-    	run_line(f'./average.py --mode bin', stdout=file)
+    	run_line(f'./average.py --mode bin --bin_size 0.01 --trim 250', stdout=file)
     run_line(f'mv output.tmp output.txt')
-#    run_line(f'./sweep.sh {x} {y}')
-#    run_line(f'./average.py')
+
+	#Run sweep
+#    run_line(f'./sweep.sh {index} {x} {y} {ext_val}')
 
 def compute_error():
 #    error_proc = "./error.py --column {i} --mode half_loop --norm tail 10 --save"	
@@ -73,7 +80,8 @@ def compute_error():
         error = np.mean(error)
         print(f"Mean error = {error}")
     else:
-        result = run_line(f"./error.py --dir data_Fe --mode half_loop --norm range --scale 0.1814 --savefig", capture_output = True)
+        result = run_line(f"./error.py --dir data_Fe --mode half_loop --norm_sim False --scale_sim 0.0016 --norm_data False --scale_data 5.86", capture_output = True)
+#        result = run_line(f"./error_zeros.py --index {index}", capture_output = True)
         error = float(result.stdout)
         print(f"Error = {error}")    
     
@@ -89,8 +97,8 @@ def objective_scaled(params):
 	run_simulation(denormalized_params)
 	return compute_error()
 
-initial_guess = [ext_val, -0.5]
-bnds = [(0, 1), (-2, 0)]
+initial_guess = [0]
+bnds = [(-5, 0)]
 tol = 1e-2
 
 normalized_guess = [transform(a, b) for a, b in zip(initial_guess, bnds)]
@@ -102,6 +110,9 @@ best_params = [detransform(a, b) for a, b in zip(result.x, bnds)]
 
 print("Best parameters:", *best_params)
 print("Minimum error:", result.fun)
+
+with open("best_parameters.txt", "w") as f:
+  print(*best_params, result.fun, file=f)
 
 #run_simulation(best_params)
 #if column == None:

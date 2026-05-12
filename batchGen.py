@@ -12,6 +12,7 @@ step = 1
 start = None
 stop = None
 reverse = False
+output = "batch_values.dat"
 #------------------------
 
 #Argument parsing
@@ -32,6 +33,9 @@ while sys.argv:
         sys.argv = sys.argv[1:]
     if sys.argv[0] == "--stop":
         stop = float(sys.argv[1])
+        sys.argv = sys.argv[1:]
+    if sys.argv[0] == "--output":
+        output = sys.argv[1]
         sys.argv = sys.argv[1:]
         
     sys.argv = sys.argv[1:]
@@ -78,17 +82,17 @@ if(mode == 'function'):
 	
 	s = []
 	for i in range(int(start), int(stop+step), step):
-		print(i,int(N(i)))
+#		print(i,int(N(i)))
 		subList = [i for _ in range(int(N(i)))]
 		s = s+subList
 		
 	if(reverse):
 		s.reverse()
 		
-#	print(f"Batch lenght: {len(s)}")
-#	print(s)
+	print(f"Batch lenght: {len(s)}")
+	print(s)
 	
 #Export
-with open("batch_values.dat", "w") as f:
+with open(f"{output}", "w") as f:
     for val in s:
         f.write(f"{val}\n")

@@ -17,6 +17,8 @@ iterations = None
 mode = "loop"
 start = None
 stop = None
+slow_range = 1
+speed_factor = 1
 
 while sys.argv:
 	if sys.argv[0] == "--rate":
@@ -37,6 +39,12 @@ while sys.argv:
 	if sys.argv[0] == "--range":
 		field_range = float(sys.argv[1])
 		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--slow_range":
+		slow_range = float(sys.argv[1])
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--speed_factor":
+		speed_factor = float(sys.argv[1])
+		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--mode":
 		mode = sys.argv[1]
 		sys.argv = sys.argv[1:]
@@ -48,7 +56,6 @@ routine = []
 if field_range != None:
 	if field_rate != None:
 		steps = int(field_range/field_rate)
-		print(steps)
 elif start != None and stop != None:
 	if field_rate != None:
 		steps = int(abs(stop-start)/field_rate)
@@ -59,7 +66,6 @@ if(mode == "loop"):
 		exit()
 	else:
 #		ramp(routine, 0, field_range, 6, 6, steps)
-		print(steps)
 		ramp(routine, field_range, -field_range, 6, 6, steps*2)
 		ramp(routine, -field_range, field_range, 6, 6, steps*2)
 		
@@ -68,7 +74,27 @@ if(mode == "half_loop"):
 		print("Error: --range and --steps or --rate must be defined.")
 		exit()
 	else:
-		ramp(routine, field_range, -field_range, 6, 6, steps)
+		ramp(routine, field_range, -field_range, 6, 6, 2*steps)
+
+if(mode == "fast_half_loop_2"):
+	if field_range == None or steps == None:
+		print("Error: --range and --steps or --rate must be defined.")
+		exit()
+	else:
+		steps = int(steps/6)
+		ramp(routine, 6, 1, 6, 6, int(5*steps/1e1))
+		ramp(routine, 1, -1, 6, 6, 2*steps)
+		ramp(routine, -1, -6, 6, 6, int(5*steps/1e1))
+
+if(mode == "fast_half_loop"):
+	if field_range == None or steps == None:
+		print("Error: --range and --steps or --rate must be defined.")
+		exit()
+	else:
+		steps_per_tesla = int(steps/field_range)
+		ramp(routine, field_range, slow_range, 6, 6, int((field_range-slow_range)*steps_per_tesla/speed_factor))
+		ramp(routine, slow_range, -slow_range, 6, 6, 2*slow_range*steps_per_tesla)
+		ramp(routine, -slow_range, -field_range, 6, 6, int((field_range-slow_range)*steps_per_tesla/speed_factor))
 		
 if(mode == "range"):
 	if start == None or stop == None:
@@ -100,9 +126,9 @@ if(mode == "const"):
 
 #Export
 if field_range != None and field_rate != None:
-	print(f"Writing field to field.dat. Rate: {round(field_rate,4)}, Range: {round(field_range,4)}")
+	print(f"Writing field to field.dat. Rate: {round(field_rate,4)}, Range: {round(field_range,4)}, Number of steps: {len(routine)}")
 else:
-	print(f"Writing field to field.dat.")
+	print(f"Writing field to field.dat. Number of steps: {len(routine)}")
 
 with open("field.dat", "w") as f:
     f.write(f"{len(routine)} 2\n")

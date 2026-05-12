@@ -19,12 +19,14 @@ show = False
 mode = "loop"
 trim = False
 trim_amount = 0
+trim_to_data = "True"
 savefig = False
 label = None
-norm_mode = "tail"
+norm_mode = "range"
 file_name_arg = 'output.txt'
 data_dir = "data"
 scale_sim = 1.0
+scale_data = 1.0
 #------------------------
 
 #Argument parsing
@@ -48,6 +50,9 @@ while sys.argv:
 	if sys.argv[0] == "--scale_sim":
 		scale_sim = float(sys.argv[1])
 		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--scale_data":
+		scale_data = float(sys.argv[1])
+		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--file" or sys.argv[0] == "-f":
 		file_name_arg = sys.argv[1]
 		sys.argv = sys.argv[1:]
@@ -56,6 +61,9 @@ while sys.argv:
 		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--norm_sim":
 		norm_sim = sys.argv[1]
+		sys.argv = sys.argv[1:]
+	if sys.argv[0] == "--trim_to_data":
+		trim_to_data = sys.argv[1]
 		sys.argv = sys.argv[1:]
 	if sys.argv[0] == "--norm_mode":
 		norm_mode = sys.argv[1]
@@ -122,15 +130,22 @@ if(norm_sim == "True"):
 	offset = 1-normHiLim/normFactor
 
 	for i in range(len(simData)):
-		simData[i]=np.array([simData[i][:,0],(simData[i][:,1]/normFactor+offset)*scale_sim]).T
+		simData[i]=np.array([simData[i][:,0],(simData[i][:,1]/normFactor+offset)]).T
 
+#Scale
+for i in range(len(simData)):
+	for j in range(len(simData[i])):
+		x, y = simData[i][j]
+		simData[i][j] = [x, y * scale_sim]
+		
 #Trim data to sim
-for entry in simData:
-	low_bound=np.min(entry, axis=0)
-	high_bound=np.max(entry, axis=0)
+if(trim_to_data == "True"):
+	for entry in simData:
+		low_bound=np.min(entry, axis=0)
+		high_bound=np.max(entry, axis=0)
 
-for i in range(len(data)):
-		data[i] = np.array([[x, y] for x, y in data[i] if low_bound[0] < x < high_bound[0]])
+	for i in range(len(data)):
+			data[i] = np.array([[x, y] for x, y in data[i] if low_bound[0] < x < high_bound[0]])
 
 #Data normalization	
 if(norm_data == "True"):
@@ -150,7 +165,13 @@ if(norm_data == "True"):
 	offset = 1-normHiLim/normFactor
 
 	for i in range(len(data)):
-		data[i]=np.array([data[i][:,0],data[i][:,1]/normFactor+offset]).T
+		data[i]=np.array([(data[i][:,0],data[i][:,1]/normFactor+offset)]).T
+
+#Scale
+for i in range(len(data)):
+	for j in range(len(data[i])):
+		x, y = data[i][j]
+		data[i][j] = [x, y * scale_data]
 
 plt.figure()
 error = []

@@ -10,6 +10,8 @@ calc() {
 
 macro_index=$1
 printf -v macro_value "%0.5f" $2
+#printf -v macro_value_2 "%0.5f" $3
+#printf -v macro_value_3 "%0.5f" $4
 
 run_dir="./run/run_$macro_index"
 spin='-\|/'
@@ -53,13 +55,13 @@ function spawn_process() {
     pids+=($pid)
     
     while [[ $(jobs -rp | wc -l) -ge $MAX_WORKERS ]]; do
-        spinner
+#        spinner
         wait -n
     done
 }
 
 while read val  ; do
-		printf -v val "%0.5f" $val
+#		printf -v val "%0.5f" $val
 		printf "\r"
         echo "$counter: $val"
         counter=$(($counter+1))
@@ -67,6 +69,6 @@ while read val  ; do
 done <./batch_values.dat
 
 #Spinner for last one
-spinner
+#spinner
 
 wait

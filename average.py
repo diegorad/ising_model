@@ -46,7 +46,8 @@ while sys.argv:
 		trim = True
 		if len(sys.argv) > 1:
 		    if "--" not in sys.argv[1]:
-			    trim_amount = int(sys.argv[1])
+			    trim_amount = float(sys.argv[1])
+			    trim_amount = int(trim_amount)
 			    sys.argv = sys.argv[1:]
 			    
 	sys.argv = sys.argv[1:]
@@ -80,7 +81,15 @@ if(mode == "files"):
 
 if(mode == "time"):
 	data = np.loadtxt("output.txt")
-
+	
+	#Trim
+	if trim:
+	    if trim_amount == None:
+	        #Delete 1/5 of the data: Initial branch
+	        trim_amount = int(len(data)/5)
+	else:
+	    trim_amount = 0
+	
 	mean_col2 = np.mean(data[trim_amount:, 1])
 	mean_col3 = np.mean(data[trim_amount:, 2])
 
@@ -114,6 +123,8 @@ if(mode == "bin"):
 	        trim_amount = int(len(data)/5)
 	else:
 	    trim_amount = 0
+	
+	data = data[trim_amount:]
 	
 	previous_field = None
 	current_field = None
